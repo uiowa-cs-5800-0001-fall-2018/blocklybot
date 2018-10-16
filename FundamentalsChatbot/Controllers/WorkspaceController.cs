@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FundamentalsChatbot.Controllers
 {
-    public class DashboardController : Controller
+    public class WorkspaceController : Controller
     {
-        public IActionResult Dashboard()
+        public IActionResult Workspace()
         {
-            ViewData["Message"] = "A user's dashboard for seeing their projects, creating new projects, etc.";
+            ViewData["Message"] = "A workspace for editing programs";
 
             return View();
         }

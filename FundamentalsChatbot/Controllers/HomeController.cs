@@ -5,9 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using FundamentalsChatbot.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FundamentalsChatbot.Controllers
 {
+    [AllowAnonymous]
     public class HomeController : Controller
     {
         public IActionResult Index()
