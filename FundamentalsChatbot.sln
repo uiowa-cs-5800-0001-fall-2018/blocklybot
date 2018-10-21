@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FundamentalsChatbot", "FundamentalsChatbot\FundamentalsChatbot.csproj", "{5C789F00-252E-4DE3-BCBE-6C5A45B9FEE2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AwsServices", "AwsServices\AwsServices.csproj", "{53A3A048-A063-43BB-8B6F-E3865E375DDD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AwsTester", "AwsTester\AwsTester.csproj", "{4E7CDF7B-ECB2-4A88-9322-87B1DC25244B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{5C789F00-252E-4DE3-BCBE-6C5A45B9FEE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C789F00-252E-4DE3-BCBE-6C5A45B9FEE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C789F00-252E-4DE3-BCBE-6C5A45B9FEE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53A3A048-A063-43BB-8B6F-E3865E375DDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53A3A048-A063-43BB-8B6F-E3865E375DDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53A3A048-A063-43BB-8B6F-E3865E375DDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53A3A048-A063-43BB-8B6F-E3865E375DDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E7CDF7B-ECB2-4A88-9322-87B1DC25244B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E7CDF7B-ECB2-4A88-9322-87B1DC25244B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E7CDF7B-ECB2-4A88-9322-87B1DC25244B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E7CDF7B-ECB2-4A88-9322-87B1DC25244B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
