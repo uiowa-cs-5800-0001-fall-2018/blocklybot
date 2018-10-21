@@ -16,7 +16,7 @@ Blockly.defineBlocksWithJsonArray(
         "previousStatement": null,
         "nextStatement": null,
         "colour": 230,
-        "tooltip": "Send a response to the user",
+        "tooltip": "Send a message to the user",
         "helpUrl": ""
     },
     {
@@ -25,7 +25,7 @@ Blockly.defineBlocksWithJsonArray(
         "message0": "Receive Message",
         "nextStatement": null,
         "colour": 230,
-        "tooltip": "This block executes when a text message is received from the user",
+        "tooltip": "Executes when a message is received from the user",
         "helpUrl": ""
     },
     {
@@ -39,10 +39,10 @@ Blockly.defineBlocksWithJsonArray(
     },
     {
         "type": "get_sms_sender",
-        "message0": "Get Message Sender",
+        "message0": "Message Sender",
         "output": "String",
         "colour": 230,
-        "tooltip": "Get the sending phone number from the message that was received",
+        "tooltip": "Get the sending phone number of the message that was received",
         "helpUrl": ""
     }
 ]);

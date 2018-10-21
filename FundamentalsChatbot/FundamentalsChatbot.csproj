@@ -6,6 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="closure-library\**" />
+    <Compile Remove="google-blockly\**" />
+    <Content Remove="closure-library\**" />
+    <Content Remove="google-blockly\**" />
+    <EmbeddedResource Remove="closure-library\**" />
+    <EmbeddedResource Remove="google-blockly\**" />
+    <None Remove="closure-library\**" />
+    <None Remove="google-blockly\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" PrivateAssets="All" />
@@ -23,5 +34,9 @@
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
   </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="xcopy $(ProjectDir)google-blockly\** $(ProjectDir)wwwroot\blockly\ /d /i /s /e /y&#xD;&#xA;xcopy $(ProjectDir)closure-library\** $(ProjectDir)wwwroot\closure-library\ /d /i /s /e /y" />
+  </Target>
 
 </Project>
