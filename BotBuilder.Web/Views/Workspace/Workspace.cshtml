@@ -1,0 +1,78 @@
+﻿@{
+    ViewData["Title"] = "Workspace";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="@Url.Action("Dashboard", "Dashboard")">Dashboard</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Workspace</li>
+    </ol>
+</nav>
+
+<button class="btn btn-primary" onclick="executeWorkspace()">Run</button>
+
+<div class="container">
+    <div id="blocklyDiv" style="height: 64vh; width: auto;"></div>
+</div>
+
+<partial name="_ToolboxPartial"/>
+
+@section Scripts{
+    <environment include="Development">
+        <script src="~/blockly/blockly_uncompressed.js"></script>
+        <script src="~/blockly/blocks_compressed.js"></script>
+        <script src="~/blockly/msg/js/en.js"></script>
+        <script src="~/blockly/javascript_compressed.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/blockly/blockly_compressed.js" asp-append-version="true"></script>
+        <script src="~/blockly/blocks_compressed.js" asp-append-version="true"></script>
+        <script src="~/blockly/msg/js/en.js" asp-append-version="true"></script>
+        <script src="~/blockly/javascript_compressed.js" asp-append-version="true"></script>
+    </environment>
+
+    <script>
+        var toolbox = document.getElementById("toolbox");
+
+        var options = {
+            toolbox: toolbox,
+            collapse: true,
+            comments: true,
+            disable: true,
+            maxBlocks: Infinity,
+            trashcan: true,
+            horizontalLayout: false,
+            toolboxPosition: 'start',
+            css: true,
+            media: 'https://blockly-demo.appspot.com/static/media/',
+            rtl: false,
+            scrollbars: true,
+            sounds: true,
+            oneBasedIndex: true
+        };
+
+        /* Inject your workspace */
+        var workspace = Blockly.inject('blocklyDiv', options);
+
+        /* Load Workspace Blocks from XML to workspace. Remove all code below if no blocks to load */
+
+        /* TODO: Change workspace blocks XML ID if necessary. Can export workspace blocks XML from Workspace Factory. */
+        //var workspaceBlocks = document.getElementById("workspaceBlocks");
+
+        /* Load blocks to workspace. */
+        //Blockly.Xml.domToWorkspace(workspaceBlocks, workspace);
+
+        function executeWorkspace() {
+            Blockly.JavaScript.addReservedWords('code');
+            var code = Blockly.JavaScript.workspaceToCode(workspace);
+
+            try {
+                alert(code);
+            } catch (e) {
+                alert(e);
+            }
+        }
+    </script>
+}
