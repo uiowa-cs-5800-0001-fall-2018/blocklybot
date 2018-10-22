@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace FundamentalsChatbot.Controllers
+namespace BotBuilder.Web.Controllers
 {
     public class WorkspaceController : Controller
     {

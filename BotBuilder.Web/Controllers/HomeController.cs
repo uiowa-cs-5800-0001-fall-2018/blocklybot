@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
-using FundamentalsChatbot.Models;
+using BotBuilder.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FundamentalsChatbot.Controllers
+namespace BotBuilder.Web.Controllers
 {
     [AllowAnonymous]
     public class HomeController : Controller

@@ -1,4 +1,4 @@
-namespace FundamentalsChatbot.Models
+namespace BotBuilder.Web.Models
 {
     public class ErrorViewModel
     {
