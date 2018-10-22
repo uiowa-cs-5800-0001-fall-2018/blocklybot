@@ -1,5 +1,8 @@
-﻿@{
+﻿@using BotBuilder.Web.Data
+@model BotBuilder.Web.Data.Project
+@{
     ViewData["Title"] = "Workspace";
+    var projectStep = Model.ProjectSteps.OrderBy(x => x.ProjectStepOrder).First();
 }
 
 <nav aria-label="breadcrumb">
@@ -11,13 +14,17 @@
     </ol>
 </nav>
 
-<button class="btn btn-primary" onclick="executeWorkspace()">Run</button>
+<button class="btn btn-primary" onclick="executeWorkspace()">Save</button>
 
 <div class="container">
     <div id="blocklyDiv" style="height: 64vh; width: auto;"></div>
 </div>
 
-<partial name="_ToolboxPartial"/>
+<partial name="_ToolboxPartial" />
+
+<div style="display: none;">
+    @Html.Raw(projectStep.StepXML)
+</div>
 
 @section Scripts{
     <environment include="Development">
@@ -56,23 +63,41 @@
         /* Inject your workspace */
         var workspace = Blockly.inject('blocklyDiv', options);
 
-        /* Load Workspace Blocks from XML to workspace. Remove all code below if no blocks to load */
-
-        /* TODO: Change workspace blocks XML ID if necessary. Can export workspace blocks XML from Workspace Factory. */
-        //var workspaceBlocks = document.getElementById("workspaceBlocks");
+        //
+        var workspaceBlocks = document.getElementById("workspaceBlocks");
 
         /* Load blocks to workspace. */
-        //Blockly.Xml.domToWorkspace(workspaceBlocks, workspace);
+        Blockly.Xml.domToWorkspace(workspaceBlocks, workspace);
+
+        var xml = Blockly.Xml.workspaceToDom(workspace);
+        var xml_text = Blockly.Xml.domToText(xml);
 
         function executeWorkspace() {
             Blockly.JavaScript.addReservedWords('code');
             var code = Blockly.JavaScript.workspaceToCode(workspace);
 
-            try {
-                alert(code);
-            } catch (e) {
-                alert(e);
-            }
+            var xml = Blockly.Xml.workspaceToDom(workspace);
+            xml.id = "workspaceBlocks";
+            var xml_text = Blockly.Xml.domToText(xml);
+
+            $.ajax({
+                url: '@Url.Action("PutProjectStep", "Workspace", new { id = projectStep.ProjectStepId })',
+                data: {
+                    "projectStepId": "@projectStep.ProjectStepId",
+                    "stepXML": xml_text,
+                    "projectStepOrder": "@projectStep.ProjectStepOrder",
+                    "projectId": "@projectStep.ProjectId"
+                },
+                method: 'PUT'
+            });
+
+            $.ajax({
+                url: '@Url.Action("PutProjectStepCode", "Workspace", new { id = projectStep.ProjectStepId })',
+                data: {
+                    "code": code
+                },
+                method: 'PUT'
+            });
         }
     </script>
 }

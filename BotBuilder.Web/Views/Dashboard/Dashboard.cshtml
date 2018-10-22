@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<BotBuilder.Web.Data.Project>
+@{
     ViewData["Title"] = "Dashboard";
 }
 <h2>@ViewData["Title"]</h2>
@@ -7,3 +8,36 @@
 <p>
     Edit a program in the <a asp-controller="Workspace" asp-action="Workspace">workspace</a>.
 </p>
+
+<p>
+    <a asp-action="Create" asp-controller="Projects">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-controller="Projects" asp-route-id="@item.ProjectId">Edit</a> |
+                    <a asp-action="Details" asp-controller="Projects" asp-route-id="@item.ProjectId">Details</a> |
+                    <a asp-action="Delete" asp-controller="Projects" asp-route-id="@item.ProjectId">Delete</a>
+                </td>
+                <td>
+                    <a class="btn btn-primary" asp-action="Workspace" asp-controller="Workspace" asp-route-id="@item.ProjectId">Edit in Workspace</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
