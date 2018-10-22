@@ -172,6 +172,7 @@ bld/
 #wwwroot/
 BotBuilder.Web/wwwroot/blockly/
 BotBuilder.Web/wwwroot/closure-library/
+BotBuilder.Web/wwwroot/lib/
 
 # Visual Studio 2017 auto generated files
 Generated\ Files/
