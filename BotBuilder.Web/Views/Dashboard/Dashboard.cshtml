@@ -1,16 +1,11 @@
 ﻿@model IEnumerable<BotBuilder.Web.Data.Project>
 @{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = " Projects Dashboard";
 }
 <h2>@ViewData["Title"]</h2>
-<h3>@ViewData["Message"]</h3>
 
 <p>
-    Edit a program in the <a asp-controller="Workspace" asp-action="Workspace">workspace</a>.
-</p>
-
-<p>
-    <a asp-action="Create" asp-controller="Projects">Create New</a>
+    <a class="btn btn-primary" asp-action="Create" asp-controller="Projects">Create New Project</a>
 </p>
 <table class="table">
     <thead>

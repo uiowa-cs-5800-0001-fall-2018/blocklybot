@@ -19,22 +19,32 @@ namespace BotBuilder.AwsServices.Services
             });
         }
 
-        public void CreateLambda()
+        public void CreateLambda(string functionName, string functionDescription, string s3Bucket, string s3Key, string roleArn)
         {
-            Task<CreateFunctionResponse> a = _client.CreateFunctionAsync(new CreateFunctionRequest
+            CreateFunctionResponse result = _client.CreateFunctionAsync(new CreateFunctionRequest
             {
-                FunctionName = "",
+                FunctionName = functionName,
                 Code = new FunctionCode
                 {
-                    S3Bucket = ""
-                }
-            });
+                    S3Bucket = s3Bucket,
+                    S3Key = s3Key
+                },
+                Publish = true,
+                Role = roleArn,
+                Description = functionDescription,
+                Handler = "index.handler"
+            }).Result;
+        }
 
-            _client.CreateEventSourceMappingAsync(new CreateEventSourceMappingRequest
+        public void UpdateLambda(string functionName, string s3Bucket, string s3Key)
+        {
+            UpdateFunctionCodeResponse result = _client.UpdateFunctionCodeAsync(new UpdateFunctionCodeRequest
             {
-                EventSourceArn = "",
-                Enabled = true
-            });
+                FunctionName = functionName,
+                S3Bucket = s3Bucket,
+                S3Key = s3Key,
+                Publish = true
+            }).Result;
         }
     }
 }

@@ -36,5 +36,13 @@ namespace BotBuilder.Tests.AwsServicesTests
             bool bucketExists3 = _s3Service.CheckIfBucketExists(bucket);
             Assert.IsFalse(bucketExists3);
         }
+
+        [TestMethod]
+        public void ListBucket()
+        {
+            string bucket = "fundamentals-bucket-twilio";
+            _s3Service.ListBucket();
+            
+        }
     }
 }

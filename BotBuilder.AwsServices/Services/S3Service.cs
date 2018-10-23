@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using Amazon;
@@ -102,6 +103,15 @@ namespace BotBuilder.AwsServices.Services
             {
                 _logger.Error(e);
                 return false;
+            }
+        }
+
+        public void ListBucket()
+        {
+            ListObjectsResponse result = _client.ListObjectsAsync("fundamentals-bucket-twilio").Result;
+            foreach (S3Object s3Object in result.S3Objects)
+            {
+                Console.WriteLine(s3Object.Key);
             }
         }
     }

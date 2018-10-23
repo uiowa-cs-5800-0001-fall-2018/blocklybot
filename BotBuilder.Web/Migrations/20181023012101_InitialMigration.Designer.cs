@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BotBuilder.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20181022200418_InitialMigration")]
+    [Migration("20181023012101_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
