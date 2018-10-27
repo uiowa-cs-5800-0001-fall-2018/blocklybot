@@ -13,8 +13,8 @@ This project is an ASP.NET Core MVC web application hosted on AWS Elastic Beanst
 * BlockBot.AwsServices/ - C# class library for Amazon Web Services helper classes
 * BlockBot.Tests/ - MsTest unit tests
 * BlockBot.Web/ - ASP.NET Core MVC web application
-* BlockBot.Web/closure-library/ - Google's common JavaScript library, used by google-blockly (https://github.com/google/closure-library)
-* BlockBot.Web/google-blockly/ - Node.js library for a web-based visual programming editor (https://github.com/google/blockly)
+* [BlockBot.Web/closure-library/](https://github.com/google/closure-library) - Google's common JavaScript library, used by google-blockly
+* [BlockBot.Web/google-blockly/](https://github.com/google/blockly) - Node.js library for a web-based visual programming editor
   
 ## First Time Install Instructions
 
