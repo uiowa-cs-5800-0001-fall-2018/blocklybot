@@ -10,11 +10,11 @@ Project team meeting minutes can be found [here](https://github.com/uiowa-cs-580
 
 This project is an ASP.NET Core MVC web application hosted on AWS Elastic Beanstalk. When a user sets up an integration and creates a project, specific code for interacting with that integration is created as an AWS Lambda function. A diagram of the application's structure is [here](https://cloudcraft.co/view/83dae09e-8d89-45e3-a839-ce86165a1c0e?key=Ed73-LtpZYT6eClSgURPbQ). Below is a description of each part of this project.
 
-* BlockBot.AwsServices - C# class library for Amazon Web Services helper classes
-* BlockBot.Tests - MsTest unit tests
-* BlockBot.Web - ASP.NET Core MVC web application
-  * closure-library - Google's common JavaScript library, used by google-blockly (https://github.com/google/closure-library)
-  * google-blockly - Node.js library for a web-based visual programming editor (https://github.com/google/blockly)
+* BlockBot.AwsServices/ - C# class library for Amazon Web Services helper classes
+* BlockBot.Tests/ - MsTest unit tests
+* BlockBot.Web/ - ASP.NET Core MVC web application
+* BlockBot.Web/closure-library/ - Google's common JavaScript library, used by google-blockly (https://github.com/google/closure-library)
+* BlockBot.Web/google-blockly/ - Node.js library for a web-based visual programming editor (https://github.com/google/blockly)
   
 ## First Time Install Instructions
 
