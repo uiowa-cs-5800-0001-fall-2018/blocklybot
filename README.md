@@ -43,4 +43,4 @@ This project assumes the developer is working on a Windows operating system, and
 
 ## Making Changes to this Project
 
-This project does not allow people to push code to the develop or master branches. Instead, changes should be made by getting the latest version of develop, branching off of develop to a separate branch, making changes on the separate branch, and pushing the separate branch to this repository. Then, pull requests should be made to merge those changes into develop or master.
+This project does not allow people to push code to the develop or master branches. Instead, changes should be made by getting the latest version of develop, branching off of develop to a separate branch, making changes on the separate branch, and pushing the separate branch to this repository. Then, pull requests should be made to merge those changes into develop. Changes are merged from develop to master during software releases.
