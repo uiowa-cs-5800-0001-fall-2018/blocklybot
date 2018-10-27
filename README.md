@@ -40,3 +40,7 @@ This project assumes the developer is working on a Windows operating system, and
    * To set a project as the startup project, right-click the project in the solution explorer and select `Set as StartUp Project`
 8. To start the project, click the green play icon in the top middle of the Visual Studio window. The first time this is done, Visual Studio will likely spend several minutes copying files and building the solution.
 9. A browser should open and the site will open in a tab. This project uses HTTPS by default, so security errors may occur if your browser doesn't trust the certificate used for local development. Follow the appropriate steps for your browser to trust this certificate and visit the web page.
+
+## Making Changes to this Project
+
+This project does not allow people to push code to the develop or master branches. Instead, changes should be made by getting the latest version of develop, branching off of develop to a separate branch, making changes on the separate branch, and pushing the separate branch to this repository. Then, pull requests should be made to merge those changes into develop or master.
