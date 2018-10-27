@@ -11,18 +11,21 @@ A web application for building chat bots.
   
 ## First Time Install Instructions
 
+This project assumes the developer is working on a Windows operating system, and ideally that the developer is working on Windows 10 or later.
+
 1. Ensure you have the following software installed:
-   * (Optional) [Visual Studio Code](https://code.visualstudio.com/)
-     * (Recommended) [Enable "Open with Code" functionality during install](https://thisdavej.com/right-click-on-windows-folder-and-open-with-visual-studio-code/)
+   * (Recommended) [Visual Studio Code](https://code.visualstudio.com/)
+     * [Enable "Open with Code" functionality during install](https://thisdavej.com/right-click-on-windows-folder-and-open-with-visual-studio-code/)
    * [Visual Studio 2017](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&rel=15#)
      * Install the following workloads (with all optional components): .NET Core cross-platform development, ASP.NET and web development, and Data science and analytical applications
-   * (Optional) [Set up a Jetbrains student account](https://www.jetbrains.com/student/) and  install [Jetbrains ReSharper](https://www.jetbrains.com/resharper/)
+   * (Recommended) [Set up a Jetbrains student account](https://www.jetbrains.com/student/) and  install [Jetbrains ReSharper](https://www.jetbrains.com/resharper/)
    * [AWS Toolkit for Visual Studio](https://marketplace.visualstudio.com/items?itemName=AmazonWebServices.AWSToolkitforVisualStudio2017&refid=gs_card)
    * [Python 2](https://www.python.org/download/releases/2.7.8/)
    * [Node.js 8](https://nodejs.org/en/)
-   * (Optional) [Jetbrains Webstorm](https://www.jetbrains.com/webstorm/) (javascript IDE)
-   * (Optional) [Configure Windows to show file extensions](https://www.howtogeek.com/205086/beginner-how-to-make-windows-show-file-extensions/)
+   * (Recommended) [Jetbrains Webstorm](https://www.jetbrains.com/webstorm/) (JavaScript IDE)
+   * (Recommended) [Configure Windows to show file extensions](https://www.howtogeek.com/205086/beginner-how-to-make-windows-show-file-extensions/)
 2. Clone this repo to your local machine
 3. Navigate to BlockBot.Web/closure-library/ and run `npm install`
 4. Navigate to BlockBot.Web/google-blockly/ and run `npm install`
-5. 
+5. Open `FundamentalsChatbot.sln` in Visual Studio
+6. 
