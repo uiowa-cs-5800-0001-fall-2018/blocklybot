@@ -33,6 +33,8 @@ namespace BlockBot.Tests.AwsServicesTests
             string file = "test.txt";
             string fileContents = "test file contents";
 
+            // TODO test that functionArns can be used in place of functionNames
+
             // Exist bucket false
             bool bucketExists1 = _s3Service.CheckIfBucketOrObjectExists(bucket).Result;
             Assert.IsFalse(bucketExists1);

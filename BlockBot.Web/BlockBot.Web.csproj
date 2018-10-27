@@ -34,10 +34,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Identity\Pages\Account\Manage\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\BlockBot.AwsServices\BlockBot.AwsServices.csproj" />
   </ItemGroup>
 
