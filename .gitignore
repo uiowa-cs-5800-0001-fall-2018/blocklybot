@@ -170,6 +170,9 @@ bld/
 .vs/
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
+BlockBot.Web/wwwroot/blockly/
+BlockBot.Web/wwwroot/closure-library/
+BlockBot.Web/wwwroot/lib/
 
 # Visual Studio 2017 auto generated files
 Generated\ Files/

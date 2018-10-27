@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FundamentalsChatbot", "FundamentalsChatbot\FundamentalsChatbot.csproj", "{5C789F00-252E-4DE3-BCBE-6C5A45B9FEE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlockBot.AwsServices", "BlockBot.AwsServices\BlockBot.AwsServices.csproj", "{CDB4A959-AD40-4BDC-B304-099CA1CBEC5E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlockBot.Tests", "BlockBot.Tests\BlockBot.Tests.csproj", "{15E4CB57-FAC8-4DA6-92E4-FFAC17015117}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlockBot.Web", "BlockBot.Web\BlockBot.Web.csproj", "{117F1557-DEA7-4BF3-9A56-F016F8B25980}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +15,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5C789F00-252E-4DE3-BCBE-6C5A45B9FEE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5C789F00-252E-4DE3-BCBE-6C5A45B9FEE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5C789F00-252E-4DE3-BCBE-6C5A45B9FEE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5C789F00-252E-4DE3-BCBE-6C5A45B9FEE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDB4A959-AD40-4BDC-B304-099CA1CBEC5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDB4A959-AD40-4BDC-B304-099CA1CBEC5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDB4A959-AD40-4BDC-B304-099CA1CBEC5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDB4A959-AD40-4BDC-B304-099CA1CBEC5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15E4CB57-FAC8-4DA6-92E4-FFAC17015117}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15E4CB57-FAC8-4DA6-92E4-FFAC17015117}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15E4CB57-FAC8-4DA6-92E4-FFAC17015117}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15E4CB57-FAC8-4DA6-92E4-FFAC17015117}.Release|Any CPU.Build.0 = Release|Any CPU
+		{117F1557-DEA7-4BF3-9A56-F016F8B25980}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{117F1557-DEA7-4BF3-9A56-F016F8B25980}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{117F1557-DEA7-4BF3-9A56-F016F8B25980}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{117F1557-DEA7-4BF3-9A56-F016F8B25980}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
