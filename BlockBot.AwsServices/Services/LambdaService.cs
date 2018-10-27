@@ -126,6 +126,10 @@ namespace BlockBot.AwsServices.Services
 
                 return result.HttpStatusCode == HttpStatusCode.OK;
             }
+            catch (ResourceNotFoundException)
+            {
+                return false;
+            }
             catch (Exception e)
             {
                 _logger.Error(e);
