@@ -4,9 +4,12 @@ A web application for building chat bots.
 
 ## Meeting Minutes
 
-Project meeting minutes can be found [here](https://github.com/uiowa-cs-5800-0001-fall-2018/blocklybot/wiki/Meeting-Minutes)
+Project meeting minutes can be found [here](https://github.com/uiowa-cs-5800-0001-fall-2018/blocklybot/wiki/Meeting-Minutes).
 
 ## Project Structure
+
+This project is an ASP.NET Core MVC web application hosted on AWS Elastic Beanstalk. When a user sets up an integration and creates a project, specific code for interacting with that integration is created as an AWS Lambda function. A diagram of the application's structure is [here](https://cloudcraft.co/view/83dae09e-8d89-45e3-a839-ce86165a1c0e?key=Ed73-LtpZYT6eClSgURPbQ). Below is a description of each part of this project.
+
 * BlockBot.AwsServices - C# class library for Amazon Web Services helper classes
 * BlockBot.Tests - MsTest unit tests
 * BlockBot.Web - ASP.NET Core MVC web application
@@ -51,3 +54,15 @@ This project does not allow people to push code to the develop or master branche
 
 ## Additional Resources
 
+All additional documentation for this project is available under the project [wiki](https://github.com/uiowa-cs-5800-0001-fall-2018/blocklybot/wiki).
+
+Resources for Google Blockly can be found on the [Blockly project page](https://developers.google.com/blockly/).
+
+This project integrations with a number of web services, resources for which can be found below:
+ * [Amazon Web Services](https://docs.aws.amazon.com)
+ * Twilio: TODO
+ * Facebook Messenger: TODO
+ * Twitter: TODO
+ * Reddit: TODO
+ * Slack: TODO
+ * Google Calendar: TODO
