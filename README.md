@@ -4,7 +4,7 @@ A web application for building chat bots.
 
 ## Meeting Minutes
 
-Project meeting minutes can be found [here](https://github.com/uiowa-cs-5800-0001-fall-2018/blocklybot/wiki/Meeting-Minutes).
+Project team meeting minutes can be found [here](https://github.com/uiowa-cs-5800-0001-fall-2018/blocklybot/wiki/Meeting-Minutes).
 
 ## Project Structure
 
