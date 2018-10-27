@@ -1,4 +1,4 @@
-# blocklybot
+# BlockBot.io
 
 A web application for building chat bots.
 
