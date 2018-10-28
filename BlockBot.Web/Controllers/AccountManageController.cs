@@ -38,7 +38,7 @@ namespace BlockBot.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ChangePasswordAsync()
+        public async Task<IActionResult> ChangePassword()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -49,14 +49,14 @@ namespace BlockBot.Web.Controllers
             var hasPassword = await _userManager.HasPasswordAsync(user);
             if (!hasPassword)
             {
-                return RedirectToPage("./SetPassword");
+                return RedirectToAction("SetPassword");
             }
 
             return View("ChangePassword", new ChangePasswordModel());
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangePasswordAsync(ChangePasswordModel model)
+        public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -88,13 +88,6 @@ namespace BlockBot.Web.Controllers
             return RedirectToAction();
         }
 
-
-
-
-
-
-
-
         [HttpGet]
         public async Task<IActionResult> DeletePersonalData()
         {
@@ -110,7 +103,7 @@ namespace BlockBot.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeletePersonalDataAsync(DeletePersonalDataModel model)
+        public async Task<IActionResult> DeletePersonalData(DeletePersonalDataModel model)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -142,9 +135,6 @@ namespace BlockBot.Web.Controllers
             return Redirect("~/");
         }
 
-
-
-
         [HttpGet]
         public async Task<IActionResult> Disable2fa()
         {
@@ -163,7 +153,7 @@ namespace BlockBot.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Disable2faAsync()
+        public async Task<IActionResult> Disable2fa(string unusedString = null)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -179,11 +169,8 @@ namespace BlockBot.Web.Controllers
 
             _logger.LogInformation("User with ID '{UserId}' has disabled 2fa.", _userManager.GetUserId(User));
             TempData["StatusMessage"] = "2fa has been disabled. You can reenable 2fa when you setup an authenticator app.";
-            return RedirectToPage("./TwoFactorAuthentication");
+            return RedirectToAction("TwoFactorAuthentication");
         }
-
-
-
 
         [HttpPost]
         public async Task<IActionResult> DownloadPersonalData()
@@ -209,10 +196,8 @@ namespace BlockBot.Web.Controllers
             return new FileContentResult(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(personalData)), "text/json");
         }
 
-
-
         [HttpGet]
-        public async Task<IActionResult> EnableAuthenticatorAsync()
+        public async Task<IActionResult> EnableAuthenticator()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -220,14 +205,13 @@ namespace BlockBot.Web.Controllers
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var model = new EnableAuthenticatorModel();
-            await LoadSharedKeyAndQrCodeUriAsync(user, model);
+            var model = await LoadSharedKeyAndQrCodeUri(user, new EnableAuthenticatorModel());
 
             return View("EnableAuthenticator", model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EnableAuthenticatorAsync(EnableAuthenticatorModel model)
+        public async Task<IActionResult> EnableAuthenticator(EnableAuthenticatorModel model)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -237,7 +221,7 @@ namespace BlockBot.Web.Controllers
 
             if (!ModelState.IsValid)
             {
-                await LoadSharedKeyAndQrCodeUriAsync(user, model);
+                model = await LoadSharedKeyAndQrCodeUri(user, model);
                 return View("EnableAuthenticator", model);
             }
 
@@ -250,7 +234,7 @@ namespace BlockBot.Web.Controllers
             if (!is2faTokenValid)
             {
                 ModelState.AddModelError("Input.Code", "Verification code is invalid.");
-                await LoadSharedKeyAndQrCodeUriAsync(user, model);
+                model = await LoadSharedKeyAndQrCodeUri(user, model);
                 return View("EnableAuthenticator", model);
             }
 
@@ -264,18 +248,16 @@ namespace BlockBot.Web.Controllers
             {
                 var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
                 TempData["RecoveryCodes"] = recoveryCodes.ToArray();
-                return RedirectToPage("./ShowRecoveryCodes");
+                return RedirectToAction("ShowRecoveryCodes");
             }
             else
             {
-                return RedirectToPage("./TwoFactorAuthentication");
+                return RedirectToAction("TwoFactorAuthentication");
             }
         }
 
-        private async Task LoadSharedKeyAndQrCodeUriAsync(IdentityUser user, EnableAuthenticatorModel model)
+        private async Task<EnableAuthenticatorModel> LoadSharedKeyAndQrCodeUri(IdentityUser user, EnableAuthenticatorModel model)
         {
-            // TODO convert this to return the updated model 
-
             // Load the authenticator key & QR code URI to display on the form
             var unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user);
             if (string.IsNullOrEmpty(unformattedKey))
@@ -288,6 +270,7 @@ namespace BlockBot.Web.Controllers
 
             var email = await _userManager.GetEmailAsync(user);
             model.AuthenticatorUri = GenerateQrCodeUri(email, unformattedKey);
+            return model;
         }
 
         private string FormatKey(string unformattedKey)
@@ -316,17 +299,8 @@ namespace BlockBot.Web.Controllers
                 unformattedKey);
         }
 
-
-
-
-
-
-
-
-
-
         [HttpGet]
-        public async Task<IActionResult> ExternalLoginsAsync()
+        public async Task<IActionResult> ExternalLogins()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -348,7 +322,7 @@ namespace BlockBot.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ExternalLoginsRemoveLoginAsync(string loginProvider, string providerKey)
+        public async Task<IActionResult> ExternalLoginsRemoveLogin(string loginProvider, string providerKey)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -365,23 +339,23 @@ namespace BlockBot.Web.Controllers
 
             await _signInManager.RefreshSignInAsync(user);
             TempData["StatusMessage"] = "The external login was removed.";
-            return RedirectToAction();
+            return RedirectToAction("ExternalLogins");
         }
 
         [HttpPost]
-        public async Task<IActionResult> ExternalLoginsLinkLoginAsync(string provider)
+        public async Task<IActionResult> ExternalLoginsLinkLogin(string provider)
         {
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
             // Request a redirect to the external login provider to link a login for the current user
-            var redirectUrl = Url.Page("./ExternalLogins", pageHandler: "LinkLoginCallback");
+            var redirectUrl = Url.Action("ExternalLoginsLinkLoginCallback");
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl, _userManager.GetUserId(User));
             return new ChallengeResult(provider, properties);
         }
 
         [HttpGet]
-        public async Task<IActionResult> ExternalLoginsLinkLoginCallbackAsync()
+        public async Task<IActionResult> ExternalLoginsLinkLoginCallback()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -405,10 +379,8 @@ namespace BlockBot.Web.Controllers
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
             TempData["StatusMessage"] = "The external login was added.";
-            return RedirectToAction();
+            return RedirectToAction("ExternalLogins");
         }
-
-
 
         [HttpGet]
         public async Task<IActionResult> GenerateRecoveryCodes()
@@ -430,7 +402,7 @@ namespace BlockBot.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GenerateRecoveryCodesAsync()
+        public async Task<IActionResult> GenerateRecoveryCodes(string unusedString = null)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -450,12 +422,8 @@ namespace BlockBot.Web.Controllers
 
             _logger.LogInformation("User with ID '{UserId}' has generated new 2FA recovery codes.", userId);
             TempData["StatusMessage"] = "You have generated new recovery codes.";
-            return RedirectToPage("./ShowRecoveryCodes");
+            return RedirectToAction("ShowRecoveryCodes");
         }
-
-
-
-
 
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -481,7 +449,7 @@ namespace BlockBot.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> IndexAsync(IndexModel model)
+        public async Task<IActionResult> Index(IndexModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -522,7 +490,7 @@ namespace BlockBot.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> OnPostSendVerificationEmailAsync(IndexModel model)
+        public async Task<IActionResult> IndexSendVerificationEmail(IndexModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -535,15 +503,10 @@ namespace BlockBot.Web.Controllers
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-
             var userId = await _userManager.GetUserIdAsync(user);
             var email = await _userManager.GetEmailAsync(user);
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            var callbackUrl = Url.Page(
-                "/Account/ConfirmEmail",
-                pageHandler: null,
-                values: new { userId = userId, code = code },
-                protocol: Request.Scheme);
+            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId, code });
             await _emailSender.SendEmailAsync(
                 email,
                 "Confirm your email",
@@ -552,12 +515,6 @@ namespace BlockBot.Web.Controllers
             TempData["StatusMessage"] = "Verification email sent. Please check your email.";
             return RedirectToAction("Index");
         }
-
-
-
-
-
-
 
         [HttpGet]
         public async Task<IActionResult> PersonalData()
@@ -570,11 +527,6 @@ namespace BlockBot.Web.Controllers
 
             return View();
         }
-
-
-
-
-
 
         [HttpGet]
         public async Task<IActionResult> ResetAuthenticator()
@@ -589,7 +541,7 @@ namespace BlockBot.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ResetAuthenticatorAsync()
+        public async Task<IActionResult> ResetAuthenticator(string unusedString = null)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -604,12 +556,8 @@ namespace BlockBot.Web.Controllers
             await _signInManager.RefreshSignInAsync(user);
             TempData["StatusMessage"] = "Your authenticator app key has been reset, you will need to configure your authenticator app using the new key.";
 
-            return RedirectToPage("./EnableAuthenticator");
+            return RedirectToAction("EnableAuthenticator");
         }
-
-
-
-
 
         [HttpGet]
         public async Task<IActionResult> SetPassword()
@@ -624,7 +572,7 @@ namespace BlockBot.Web.Controllers
 
             if (hasPassword)
             {
-                return RedirectToPage("./ChangePassword");
+                return RedirectToAction("ChangePassword");
             }
 
             return View("SetPassword", new SetPasswordModel());
@@ -660,10 +608,16 @@ namespace BlockBot.Web.Controllers
             return RedirectToAction("SetPassword");
         }
 
+        [HttpGet]
+        public IActionResult ShowRecoveryCodes()
+        {
+            if (!(TempData["RecoveryCodes"] is string[] recoveryCodes) || recoveryCodes.Length == 0)
+            {
+                return RedirectToAction("TwoFactorAuthentication");
+            }
 
-
-
-
+            return View();
+        }
 
         [HttpGet]
         public async Task<IActionResult> TwoFactorAuthentication()

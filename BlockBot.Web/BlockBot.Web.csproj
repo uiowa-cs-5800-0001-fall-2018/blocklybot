@@ -25,6 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Views\AccountManage\ShowRecoveryCodes.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\AccountManage\TwoFactorAuthentication.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

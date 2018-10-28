@@ -15,13 +15,13 @@ using Microsoft.Extensions.Logging;
 
 namespace BlockBot.Web.Controllers
 {
+    [AllowAnonymous]
     public class AccountController : Controller
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<AccountController> _logger;
-        
 
         public AccountController(SignInManager<IdentityUser> signInManager,
             UserManager<IdentityUser> userManager,
@@ -40,13 +40,13 @@ namespace BlockBot.Web.Controllers
             return View();
         }
 
-        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
             if (userId == null || code == null)
             {
-                return RedirectToPage("/Index");
+                // TODO verify this redirects to the landing page
+                return Redirect("~/");
             }
 
             var user = await _userManager.FindByIdAsync(userId);
@@ -63,32 +63,25 @@ namespace BlockBot.Web.Controllers
 
             return View();
         }
-
-
-
-
-
-
-        [AllowAnonymous]
+        
         [HttpGet]
-        public IActionResult ExternalLoginAsync()
+        public IActionResult ExternalLogin()
         {
-            return RedirectToPage("./Login");
+            return RedirectToAction("Login", "Account");
         }
 
-        [AllowAnonymous]
         [HttpPost]
         public IActionResult ExternalLogin(string provider, string returnUrl = null)
         {
             // Request a redirect to the external login provider.
-            var redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new { returnUrl });
+            var redirectUrl = Url.Action("ExternalLoginCallback", new { returnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
             return new ChallengeResult(provider, properties);
         }
 
-        [AllowAnonymous]
+        
         [HttpGet]
-        public async Task<IActionResult> ExternalLoginCallbackAsync(string returnUrl = null, string remoteError = null)
+        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
         {
             ExternalLoginModel model = new ExternalLoginModel();
 
@@ -96,13 +89,13 @@ namespace BlockBot.Web.Controllers
             if (remoteError != null)
             {
                 TempData["ErrorMessage"] = $"Error from external provider: {remoteError}";
-                return RedirectToPage("./Login", new {ReturnUrl = returnUrl });
+                return RedirectToAction("Login", new { returnUrl });
             }
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
                 TempData["ErrorMessage"] = "Error loading external login information.";
-                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+                return RedirectToAction("Login", new { returnUrl });
             }
 
             // Sign in the user with this external login provider if the user already has a login.
@@ -114,7 +107,7 @@ namespace BlockBot.Web.Controllers
             }
             if (result.IsLockedOut)
             {
-                return RedirectToPage("./Lockout");
+                return RedirectToAction("Lockout");
             }
             else
             {
@@ -132,9 +125,9 @@ namespace BlockBot.Web.Controllers
             }
         }
 
-        [AllowAnonymous]
+        
         [HttpPost]
-        public async Task<IActionResult> ExternalLoginConfirmationAsync(ExternalLoginModel model, string returnUrl = null)
+        public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginModel model, string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             // Get the information about the user from the external login provider
@@ -142,7 +135,7 @@ namespace BlockBot.Web.Controllers
             if (info == null)
             {
                 TempData["ErrorMessage"] = "Error loading external login information during confirmation.";
-                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+                return RedirectToAction("Login", new { returnUrl });
             }
 
             if (ModelState.IsValid)
@@ -170,10 +163,8 @@ namespace BlockBot.Web.Controllers
             return View("ExternalLogin", model);
         }
 
-
-        [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> ForgotPasswordAsync(ForgotPasswordModel model)
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordModel model)
         {
             if (ModelState.IsValid)
             {
@@ -181,50 +172,39 @@ namespace BlockBot.Web.Controllers
                 if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
-                    return RedirectToPage("./ForgotPasswordConfirmation");
+                    return RedirectToAction("ForgotPasswordConfirmation");
                 }
 
                 // For more information on how to enable account confirmation and password reset please 
                 // visit https://go.microsoft.com/fwlink/?LinkID=532713
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var callbackUrl = Url.Page(
-                    "/Account/ResetPassword",
-                    pageHandler: null,
-                    values: new { code },
-                    protocol: Request.Scheme);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { code });
 
                 await _emailSender.SendEmailAsync(
                     model.Input.Email,
                     "Reset Password",
                     $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                return RedirectToPage("./ForgotPasswordConfirmation");
+                return RedirectToAction("ForgotPasswordConfirmation");
             }
 
             return View("ForgotPassword", model);
         }
 
-        [AllowAnonymous]
         [HttpGet]
         public IActionResult ForgotPasswordConfirmation()
         {
             return View();
         }
 
-        [AllowAnonymous]
         [HttpGet]
         public IActionResult Lockout()
         {
             return View();
         }
 
-
-
-
-
-        [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> LoginAsync(string returnUrl = null)
+        public async Task<IActionResult> Login(string returnUrl = null)
         {
             if (!string.IsNullOrEmpty(TempData["ErrorMessage"] as string))
             {
@@ -245,9 +225,8 @@ namespace BlockBot.Web.Controllers
             return View("Login", model);
         }
 
-        [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> LoginAsync(LoginModel model, string returnUrl = null)
+        public async Task<IActionResult> Login(LoginModel model, string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
 
@@ -263,12 +242,12 @@ namespace BlockBot.Web.Controllers
                 }
                 if (result.RequiresTwoFactor)
                 {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = model.Input.RememberMe });
+                    return RedirectToAction("LoginWith2fa", "Account", new { returnUrl, rememberMe = model.Input.RememberMe });
                 }
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
+                    return RedirectToAction("Lockout");
                 }
                 else
                 {
@@ -281,16 +260,8 @@ namespace BlockBot.Web.Controllers
             return View("Login", model);
         }
 
-
-
-
-
-
-
-
-        [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> LoginWith2faAsync(bool rememberMe, string returnUrl = null)
+        public async Task<IActionResult> LoginWith2fa(bool rememberMe, string returnUrl = null)
         {
             // Ensure the user has gone through the username & password screen first
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
@@ -305,9 +276,8 @@ namespace BlockBot.Web.Controllers
             return View("LoginWith2fa", model);
         }
 
-        [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> LoginWith2faAsync(LoginWith2faModel model, bool rememberMe, string returnUrl = null)
+        public async Task<IActionResult> LoginWith2fa(LoginWith2faModel model, bool rememberMe, string returnUrl = null)
         {
             if (!ModelState.IsValid)
             {
@@ -334,7 +304,7 @@ namespace BlockBot.Web.Controllers
             else if (result.IsLockedOut)
             {
                 _logger.LogWarning("User with ID '{UserId}' account locked out.", user.Id);
-                return RedirectToPage("./Lockout");
+                return RedirectToAction("Lockout");
             }
             else
             {
@@ -344,14 +314,8 @@ namespace BlockBot.Web.Controllers
             }
         }
 
-
-
-
-
-
-        [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> LoginWithRecoveryCodeAsync(string returnUrl = null)
+        public async Task<IActionResult> LoginWithRecoveryCode(string returnUrl = null)
         {
             // Ensure the user has gone through the username & password screen first
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
@@ -365,7 +329,7 @@ namespace BlockBot.Web.Controllers
             return View("LoginWithRecoveryCode", model);
         }
 
-        [AllowAnonymous]
+        
         [HttpPost]
         public async Task<IActionResult> LoginWithRecoveryCodeAsync(LoginWithRecoveryCodeModel model, string returnUrl = null)
         {
@@ -392,7 +356,7 @@ namespace BlockBot.Web.Controllers
             if (result.IsLockedOut)
             {
                 _logger.LogWarning("User with ID '{UserId}' account locked out.", user.Id);
-                return RedirectToPage("./Lockout");
+                return RedirectToAction("Lockout");
             }
             else
             {
@@ -402,12 +366,6 @@ namespace BlockBot.Web.Controllers
             }
         }
 
-
-
-
-
-
-        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Logout(string returnUrl = null)
         {
@@ -423,17 +381,6 @@ namespace BlockBot.Web.Controllers
             }
         }
 
-
-
-
-
-
-
-
-
-
-
-        [AllowAnonymous]
         [HttpGet]
         public IActionResult Register(string returnUrl = null)
         {
@@ -442,9 +389,9 @@ namespace BlockBot.Web.Controllers
             return View(model);
         }
 
-        [AllowAnonymous]
+        
         [HttpPost]
-        public async Task<IActionResult> RegisterAsync(RegisterModel model, string returnUrl = null)
+        public async Task<IActionResult> Register(RegisterModel model, string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)
@@ -456,11 +403,7 @@ namespace BlockBot.Web.Controllers
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { userId = user.Id, code = code },
-                        protocol: Request.Scheme);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code });
 
                     await _emailSender.SendEmailAsync(model.Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
@@ -478,16 +421,6 @@ namespace BlockBot.Web.Controllers
             return View("Register", model);
         }
 
-
-
-
-
-
-
-
-
-
-        [AllowAnonymous]
         [HttpGet]
         public IActionResult ResetPassword(string code = null)
         {
@@ -506,9 +439,8 @@ namespace BlockBot.Web.Controllers
             }
         }
 
-        [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> ResetPasswordAsync(ResetPasswordModel model)
+        public async Task<IActionResult> ResetPassword(ResetPasswordModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -519,13 +451,13 @@ namespace BlockBot.Web.Controllers
             if (user == null)
             {
                 // Don't reveal that the user does not exist
-                return RedirectToPage("./ResetPasswordConfirmation");
+                return RedirectToAction("ResetPasswordConfirmation");
             }
 
             var result = await _userManager.ResetPasswordAsync(user, model.Input.Code, model.Input.Password);
             if (result.Succeeded)
             {
-                return RedirectToPage("./ResetPasswordConfirmation");
+                return RedirectToAction("ResetPasswordConfirmation");
             }
 
             foreach (var error in result.Errors)
@@ -536,7 +468,6 @@ namespace BlockBot.Web.Controllers
             return View("ResetPassword", model);
         }
 
-        [AllowAnonymous]
         [HttpGet]
         public IActionResult ResetPasswordConfirmation()
         {
