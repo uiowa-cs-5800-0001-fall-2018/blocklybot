@@ -5,6 +5,8 @@
     <UserSecretsId>aspnet-FundamentalsChatbot-6C94BB4E-3154-4364-8A19-C78497B64D71</UserSecretsId>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  </PropertyGroup>
   <ItemGroup>
     <Compile Remove="closure-library\**" />
     <Compile Remove="google-blockly\**" />
@@ -37,7 +39,10 @@
     <Folder Include="Areas\Identity\Pages\Account\Manage\" />
   </ItemGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition=" '$(OS)' == 'Unix' ">
+    <Exec Command="cp -ru $(ProjectDir)google-blockly\* $(ProjectDir)wwwroot\blockly\&#xD;&#xA;cp -ru $(ProjectDir)closure-library\* $(ProjectDir)wwwroot\closure-library\" />
+  </Target>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition=" '$(OS)' != 'Unix' ">
     <Exec Command="xcopy $(ProjectDir)google-blockly\** $(ProjectDir)wwwroot\blockly\ /d /i /s /e /y&#xD;&#xA;xcopy $(ProjectDir)closure-library\** $(ProjectDir)wwwroot\closure-library\ /d /i /s /e /y" />
   </Target>
 
