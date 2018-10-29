@@ -109,7 +109,10 @@
     <None Include="Views\Shared\_AccountManageStatusMessage.cshtml" />
   </ItemGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition=" '$(OS)' == 'Unix' ">
+    <Exec Command="cp -ru $(ProjectDir)google-blockly\* $(ProjectDir)wwwroot\blockly\&#xD;&#xA;cp -ru $(ProjectDir)closure-library\* $(ProjectDir)wwwroot\closure-library\" />
+  </Target>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition=" '$(OS)' != 'Unix' ">
     <Exec Command="xcopy $(ProjectDir)google-blockly\** $(ProjectDir)wwwroot\blockly\ /d /i /s /e /y&#xD;&#xA;xcopy $(ProjectDir)closure-library\** $(ProjectDir)wwwroot\closure-library\ /d /i /s /e /y" />
   </Target>
 
