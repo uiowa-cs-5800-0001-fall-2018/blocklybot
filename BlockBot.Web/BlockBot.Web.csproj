@@ -1,0 +1,119 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>aspnet-FundamentalsChatbot-6C94BB4E-3154-4364-8A19-C78497B64D71</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="closure-library\**" />
+    <Compile Remove="google-blockly\**" />
+    <Content Remove="closure-library\**" />
+    <Content Remove="google-blockly\**" />
+    <EmbeddedResource Remove="closure-library\**" />
+    <EmbeddedResource Remove="google-blockly\**" />
+    <None Remove="closure-library\**" />
+    <None Remove="google-blockly\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.1.4" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="1.0.163" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Views\AccountManage\ShowRecoveryCodes.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\AccountManage\TwoFactorAuthentication.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\AccountManage\SetPassword.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\AccountManage\ResetAuthenticator.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\AccountManage\PersonalData.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\AccountManage\Index.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\AccountManage\GenerateRecoveryCodes.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\AccountManage\ExternalLogins.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\AccountManage\EnableAuthenticator.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\AccountManage\Disable2fa.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\AccountManage\DeletePersonalData.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\AccountManage\ChangePassword.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Account\ResetPasswordConfirmation.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Account\ResetPassword.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Account\Register.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Account\Logout.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Account\LoginWithRecoveryCode.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Account\LoginWith2fa.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Account\Login.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Account\Lockout.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Account\ForgotPasswordConfirmation.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Account\ForgotPassword.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Dashboard\Dashboard.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Workspace\Workspace.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BlockBot.AwsServices\BlockBot.AwsServices.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Shared\_AccountManageLayout.cshtml" />
+    <None Include="Views\Shared\_AccountManageNav.cshtml" />
+    <None Include="Views\Shared\_AccountManageStatusMessage.cshtml" />
+  </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition=" '$(OS)' == 'Unix' ">
+    <Exec Command="cp -ru $(ProjectDir)google-blockly\* $(ProjectDir)wwwroot\blockly\&#xD;&#xA;cp -ru $(ProjectDir)closure-library\* $(ProjectDir)wwwroot\closure-library\" />
+  </Target>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition=" '$(OS)' != 'Unix' ">
+    <Exec Command="xcopy $(ProjectDir)google-blockly\** $(ProjectDir)wwwroot\blockly\ /d /i /s /e /y&#xD;&#xA;xcopy $(ProjectDir)closure-library\** $(ProjectDir)wwwroot\closure-library\ /d /i /s /e /y" />
+  </Target>
+
+</Project>
