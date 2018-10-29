@@ -1,10 +1,11 @@
 ﻿@model BlockBot.Web.Models.AccountManage.IndexModel
 @{
     ViewData["Title"] = "Profile";
+    Layout = "_AccountManageLayout";
 }
 
 <h4>@ViewData["Title"]</h4>
-@Html.PartialAsync("_AccountManageStatusMessage", TempData["StatusMessage"] as string)
+@await Html.PartialAsync("_AccountManageStatusMessage", TempData["StatusMessage"] as string)
 <div class="row">
     <div class="col-md-6">
         <form id="profile-form" method="post">
@@ -25,7 +26,7 @@
                 else
                 {
                 <input asp-for="Input.Email" class="form-control" />
-                <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Send verification email</button>
+                <button id="email-verification" type="submit" asp-controller="AccountManage" asp-action="IndexSendVerificationEmail" class="btn btn-link">Send verification email</button>
                 }
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>

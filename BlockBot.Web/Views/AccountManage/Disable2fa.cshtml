@@ -2,9 +2,10 @@
 @{
     ViewData["Title"] = "Disable two-factor authentication (2FA)";
     ViewData["ActivePage"] = AccountManageNavPages.TwoFactorAuthentication;
+    Layout = "_AccountManageLayout";
 }
 
-@Html.PartialAsync("_AccountManageStatusMessage", TempData["StatusMessage"] as string)
+@await Html.PartialAsync("_AccountManageStatusMessage", TempData["StatusMessage"] as string)
 <h2>@ViewData["Title"]</h2>
 
 <div class="alert alert-warning" role="alert">

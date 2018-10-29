@@ -1,9 +1,10 @@
 ﻿@model BlockBot.Web.Models.AccountManage.TwoFactorAuthenticationModel
 @{
     ViewData["Title"] = "Two-factor authentication (2FA)";
+    Layout = "_AccountManageLayout";
 }
 
-@Html.PartialAsync("_AccountManageStatusMessage", TempData["StatusMessage"] as string)
+@await Html.PartialAsync("_AccountManageStatusMessage", TempData["StatusMessage"] as string)
 <h4>@ViewData["Title"]</h4>
 @if (Model.Is2faEnabled)
 {
@@ -11,21 +12,21 @@
     {
         <div class="alert alert-danger">
             <strong>You have no recovery codes left.</strong>
-            <p>You must <a asp-page="./GenerateRecoveryCodes">generate a new set of recovery codes</a> before you can log in with a recovery code.</p>
+            <p>You must <a asp-controller="AccountManage" asp-action="GenerateRecoveryCodes">generate a new set of recovery codes</a> before you can log in with a recovery code.</p>
         </div>
     }
     else if (Model.RecoveryCodesLeft == 1)
     {
         <div class="alert alert-danger">
             <strong>You have 1 recovery code left.</strong>
-            <p>You can <a asp-page="./GenerateRecoveryCodes">generate a new set of recovery codes</a>.</p>
+            <p>You can <a asp-controller="AccountManage" asp-action="GenerateRecoveryCodes">generate a new set of recovery codes</a>.</p>
         </div>
     }
     else if (Model.RecoveryCodesLeft <= 3)
     {
         <div class="alert alert-warning">
             <strong>You have @Model.RecoveryCodesLeft recovery codes left.</strong>
-            <p>You should <a asp-page="./GenerateRecoveryCodes">generate a new set of recovery codes</a>.</p>
+            <p>You should <a asp-controller="AccountManage" asp-action="GenerateRecoveryCodes">generate a new set of recovery codes</a>.</p>
         </div>
     }
 
@@ -35,19 +36,19 @@
             <button type="submit" class="btn btn-default">Forget this browser</button>
         </form>
     }
-    <a asp-page="./Disable2fa" class="btn btn-default">Disable 2FA</a>
-    <a asp-page="./GenerateRecoveryCodes" class="btn btn-default">Reset recovery codes</a>
+    <a asp-controller="AccountManage" asp-action="Disable2fa" class="btn btn-default">Disable 2FA</a>
+    <a asp-controller="AccountManage" asp-action="GenerateRecoveryCodes" class="btn btn-default">Reset recovery codes</a>
 }
 
 <h5>Authenticator app</h5>
 @if (!Model.HasAuthenticator)
 {
-    <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-default">Add authenticator app</a>
+    <a id="enable-authenticator" asp-controller="AccountManage" asp-action="EnableAuthenticator" class="btn btn-default">Add authenticator app</a>
 }
 else
 {
-    <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-default">Setup authenticator app</a>
-    <a id="reset-authenticator" asp-page="./ResetAuthenticator" class="btn btn-default">Reset authenticator app</a>
+    <a id="enable-authenticator" asp-controller="AccountManage" asp-action="EnableAuthenticator" class="btn btn-default">Setup authenticator app</a>
+    <a id="reset-authenticator" asp-controller="AccountManage" asp-action="ResetAuthenticator" class="btn btn-default">Reset authenticator app</a>
 }
 
 @section Scripts {

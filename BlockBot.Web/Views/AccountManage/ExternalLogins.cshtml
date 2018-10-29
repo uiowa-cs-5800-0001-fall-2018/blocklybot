@@ -1,9 +1,10 @@
 ﻿@model BlockBot.Web.Models.AccountManage.ExternalLoginsModel
 @{
     ViewData["Title"] = "Manage your external logins";
+    Layout = "_AccountManageLayout";
 }
 
-@Html.PartialAsync("_AccountManageStatusMessage", TempData["StatusMessage"] as string)
+@await Html.PartialAsync("_AccountManageStatusMessage", TempData["StatusMessage"] as string)
 @if (Model.CurrentLogins?.Count > 0)
 {
     <h4>Registered Logins</h4>
@@ -16,7 +17,7 @@
                 <td>
                     @if (Model.ShowRemoveButton)
                     {
-                        <form id="remove-login" asp-page-handler="RemoveLogin" method="post">
+                        <form id="remove-login" asp-controller="AccountManage" asp-action="ExternalLoginsRemoveLogin" method="post">
                             <div>
                                 <input asp-for="@login.LoginProvider" name="LoginProvider" type="hidden" />
                                 <input asp-for="@login.ProviderKey" name="ProviderKey" type="hidden" />
@@ -38,7 +39,7 @@
 {
     <h4>Add another service to log in.</h4>
     <hr />
-    <form id="link-login-form" asp-page-handler="LinkLogin" method="post" class="form-horizontal">
+    <form id="link-login-form" asp-controller="AccountManage" asp-action="ExternalLoginsLinkLogin" method="post" class="form-horizontal">
         <div id="socialLoginList">
             <p>
                 @foreach (var provider in Model.OtherLogins)

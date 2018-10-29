@@ -163,6 +163,12 @@ namespace BlockBot.Web.Controllers
             return View("ExternalLogin", model);
         }
 
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View(new ForgotPasswordModel());
+        }
+
         [HttpPost]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordModel model)
         {
@@ -331,7 +337,7 @@ namespace BlockBot.Web.Controllers
 
         
         [HttpPost]
-        public async Task<IActionResult> LoginWithRecoveryCodeAsync(LoginWithRecoveryCodeModel model, string returnUrl = null)
+        public async Task<IActionResult> LoginWithRecoveryCode(LoginWithRecoveryCodeModel model, string returnUrl = null)
         {
             if (!ModelState.IsValid)
             {
