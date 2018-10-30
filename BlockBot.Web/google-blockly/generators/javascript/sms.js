@@ -22,3 +22,19 @@ Blockly.JavaScript['get_sms_sender'] = function(block) {
     // TODO: Change ORDER_NONE to the correct strength.
     return [code, Blockly.JavaScript.ORDER_NONE];
 };
+
+
+Blockly.JavaScript['switch'] = function(block) {
+    var value_input = Blockly.JavaScript.valueToCode(block, 'Input', Blockly.JavaScript.ORDER_ATOMIC);
+    var statements_cases = Blockly.JavaScript.statementToCode(block, 'Cases');
+    var statements_default = Blockly.JavaScript.statementToCode(block, 'Default');
+    var code = 'switch (' + value_input + ') {\n' + statements_cases + 'default:\n' + statements_default + '}\n';
+    return code;
+};
+
+Blockly.JavaScript['case'] = function(block) {
+    var value_case = Blockly.JavaScript.valueToCode(block, 'case', Blockly.JavaScript.ORDER_ATOMIC);
+    var statements_case_body = Blockly.JavaScript.statementToCode(block, 'case_body');
+    var code = 'case ' + value_case + ':\n' + statements_case_body + 'break;\n';
+    return code;
+};
