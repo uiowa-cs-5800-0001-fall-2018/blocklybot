@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Runtime.InteropServices;
 
 namespace BlockBot.Web
 {
@@ -33,10 +34,20 @@ namespace BlockBot.Web
                 //options.HttpOnly = HttpOnlyPolicy.Always;
             });
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                services.AddDbContext<ApplicationDbContext>(options =>
+                   options
+                       .UseLazyLoadingProxies()
+                       .UseSqlite(Configuration.GetConnectionString("MacConnection")));
+            } else {
+                services.AddDbContext<ApplicationDbContext>(options =>
                 options
                     .UseLazyLoadingProxies()
                     .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            }
+
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -72,6 +83,8 @@ namespace BlockBot.Web
                 options.Filters.Add(new AuthorizeFilter(policy));
             })
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddSingleton<IConfiguration>(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
