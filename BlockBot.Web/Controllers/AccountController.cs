@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using BlockBot.Web.Data;
 using BlockBot.Web.Models;
 using BlockBot.Web.Models.Account;
 using Microsoft.AspNetCore.Authentication;
@@ -18,13 +19,13 @@ namespace BlockBot.Web.Controllers
     [AllowAnonymous]
     public class AccountController : Controller
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly ApplicationSignInManager _signInManager;
+        private readonly ApplicationUserManager _userManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<AccountController> _logger;
 
-        public AccountController(SignInManager<IdentityUser> signInManager,
-            UserManager<IdentityUser> userManager,
+        public AccountController(ApplicationSignInManager signInManager,
+            ApplicationUserManager userManager,
             IEmailSender emailSender,
             ILogger<AccountController> logger)
         {
@@ -140,7 +141,7 @@ namespace BlockBot.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = model.Input.Email, Email = model.Input.Email };
+                var user = new ApplicationUser { UserName = model.Input.Email, Email = model.Input.Email };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -402,19 +403,19 @@ namespace BlockBot.Web.Controllers
             returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = model.Input.Email, Email = model.Input.Email };
+                var user = new ApplicationUser { UserName = model.Input.Email, Email = model.Input.Email };
                 var result = await _userManager.CreateAsync(user, model.Input.Password);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code });
+                    var callbackUrl = $"{this.Request.Scheme}://{this.Request.Host}" + Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code });
 
                     await _emailSender.SendEmailAsync(model.Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    //await _signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(returnUrl);
                 }
                 foreach (var error in result.Errors)

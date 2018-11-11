@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using BlockBot.Web.Data;
 using BlockBot.Web.Models.AccountManage;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -17,15 +18,15 @@ namespace BlockBot.Web.Controllers
 {
     public class AccountManageController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly ApplicationUserManager _userManager;
+        private readonly ApplicationSignInManager _signInManager;
         private readonly UrlEncoder _urlEncoder;
         private readonly ILogger<AccountManageController> _logger;
         private readonly IEmailSender _emailSender;
 
         public AccountManageController(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
+            ApplicationUserManager userManager,
+            ApplicationSignInManager signInManager,
             UrlEncoder urlEncoder,
             ILogger<AccountManageController> logger,
             IEmailSender emailSender)
@@ -256,7 +257,7 @@ namespace BlockBot.Web.Controllers
             }
         }
 
-        private async Task<EnableAuthenticatorModel> LoadSharedKeyAndQrCodeUri(IdentityUser user, EnableAuthenticatorModel model)
+        private async Task<EnableAuthenticatorModel> LoadSharedKeyAndQrCodeUri(ApplicationUser user, EnableAuthenticatorModel model)
         {
             // Load the authenticator key & QR code URI to display on the form
             var unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user);

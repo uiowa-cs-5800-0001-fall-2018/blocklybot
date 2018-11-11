@@ -1,16 +1,18 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using BlockBot.Web.Data;
+using BlockBot.Web.Services.EmailSender;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Runtime.InteropServices;
 
 namespace BlockBot.Web
 {
@@ -34,22 +36,28 @@ namespace BlockBot.Web
                 //options.HttpOnly = HttpOnlyPolicy.Always;
             });
 
-
+            // Add DB context
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
-                   options
-                       .UseLazyLoadingProxies()
-                       .UseSqlite(Configuration.GetConnectionString("MacConnection")));
-            } else {
+                    options
+                        .UseLazyLoadingProxies()
+                        .UseSqlite(Configuration.GetConnectionString("MacConnection")));
+            }
+            else
+            {
                 services.AddDbContext<ApplicationDbContext>(options =>
-                options
-                    .UseLazyLoadingProxies()
-                    .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                    options
+                        .UseLazyLoadingProxies()
+                        .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             }
 
-            services.AddDefaultIdentity<IdentityUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<ApplicationUser, ApplicationRole>(o =>
+                {
+                    o.SignIn.RequireConfirmedEmail = true;
+                })
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -73,18 +81,34 @@ namespace BlockBot.Web
             });
 
             // build authorization policy
-            var policy = new AuthorizationPolicyBuilder()
+            AuthorizationPolicy policy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
                 .Build();
 
             services.AddMvc(options =>
-            {
-                // require authorization by default
-                options.Filters.Add(new AuthorizeFilter(policy));
-            })
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                {
+                    // require authorization by default
+                    options.Filters.Add(new AuthorizeFilter(policy));
+                })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddSingleton<IConfiguration>(Configuration);
+            // Dependency injection registration
+            services.AddSingleton(Configuration);
+
+            services.AddSingleton<IEmailSender, SendGridEmailSender>();
+            services.Configure<AuthMessageSenderOptions>(Configuration);
+
+            services.AddTransient<IUserStore<ApplicationUser>, ApplicationUserStore>();
+            services.AddTransient<ApplicationUserStore, ApplicationUserStore>();
+
+            services.AddTransient<IRoleStore<ApplicationRole>, ApplicationRoleStore>();
+            services.AddTransient<ApplicationRoleStore, ApplicationRoleStore>();
+
+            services.AddTransient<UserManager<ApplicationUser>, ApplicationUserManager>();
+            services.AddTransient<ApplicationUserManager, ApplicationUserManager>();
+
+            services.AddTransient<SignInManager<ApplicationUser>, ApplicationSignInManager>();
+            services.AddTransient<ApplicationSignInManager, ApplicationSignInManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -110,8 +134,8 @@ namespace BlockBot.Web
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    "default",
+                    "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

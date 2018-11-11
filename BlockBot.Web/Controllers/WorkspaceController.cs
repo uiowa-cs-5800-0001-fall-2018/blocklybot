@@ -8,11 +8,14 @@ namespace BlockBot.Web.Controllers
 {
     public class WorkspaceController : Controller
     {
+        private readonly ApplicationUserManager _userManager;
         private readonly ApplicationDbContext _context;
 
-        public WorkspaceController(ApplicationDbContext context)
+        public WorkspaceController(ApplicationDbContext context,
+            ApplicationUserManager userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -37,54 +40,69 @@ namespace BlockBot.Web.Controllers
                 return NotFound();
             }
 
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            if (project.OwnerId != user.Id)
+            {
+                return Unauthorized();
+            }
+
             return View(project);
         }
 
         [HttpPut]
-        public async Task<IActionResult> PutProjectStep(int id, ProjectStep projectStep)
+        public async Task<IActionResult> PutProjectXml(int id, string xml)
         {
-            if (!ModelState.IsValid)
+            var project = await _context.Projects.FindAsync(id);
+            if (project == null)
             {
-                return BadRequest(ModelState);
+                return NotFound($"Unable to load project with ID '{id}'.");
             }
 
-            if (id != projectStep.ProjectStepId)
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
             {
-                return BadRequest();
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            _context.Entry(projectStep).State = EntityState.Modified;
+            if (project.OwnerId != user.Id)
+            {
+                return Unauthorized();
+            }
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProjectStepExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            project.XML = xml;
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
         [HttpPut]
-        public async Task<IActionResult> PutProjectStepCode(int id, string code)
+        public async Task<IActionResult> PutProjectCode(int id, string code)
         {
+            var project = await _context.Projects.FindAsync(id);
+            if (project == null)
+            {
+                return NotFound($"Unable to load project with ID '{id}'.");
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            if (project.OwnerId != user.Id)
+            {
+                return Unauthorized();
+            }
+
             // TODO update lambda function(s)
 
             return NoContent();
-        }
-
-        private bool ProjectStepExists(int id)
-        {
-            return _context.ProjectSteps.Any(e => e.ProjectStepId == id);
         }
     }
 }

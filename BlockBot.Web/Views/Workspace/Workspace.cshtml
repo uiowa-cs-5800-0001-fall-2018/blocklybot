@@ -1,7 +1,6 @@
 ﻿@model BlockBot.Web.Data.Project
 @{
     ViewData["Title"] = "Workspace";
-    var projectStep = Model.ProjectSteps.OrderBy(x => x.ProjectStepOrder).First();
 }
 
 <nav aria-label="breadcrumb">
@@ -22,7 +21,7 @@
 <partial name="_ToolboxPartial" />
 
 <div style="display: none;">
-    @Html.Raw(projectStep.StepXML)
+    @Html.Raw(Model.XML)
 </div>
 
 @section Scripts{
@@ -80,18 +79,15 @@
             var xml_text = Blockly.Xml.domToText(xml);
 
             $.ajax({
-                url: '@Url.Action("PutProjectStep", "Workspace", new { id = projectStep.ProjectStepId })',
+                url: '@Url.Action("PutProjectXml", "Workspace", new { id = Model.ProjectId })',
                 data: {
-                    "projectStepId": "@projectStep.ProjectStepId",
-                    "stepXML": xml_text,
-                    "projectStepOrder": "@projectStep.ProjectStepOrder",
-                    "projectId": "@projectStep.ProjectId"
+                    "xml": xml_text
                 },
                 method: 'PUT'
             });
 
             $.ajax({
-                url: '@Url.Action("PutProjectStepCode", "Workspace", new { id = projectStep.ProjectStepId })',
+                url: '@Url.Action("PutProjectCode", "Workspace", new { id = Model.ProjectId })',
                 data: {
                     "code": code
                 },
