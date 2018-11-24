@@ -7,8 +7,8 @@ using Amazon.APIGateway.Model;
 using Amazon.Runtime.CredentialManagement;
 using Amazon.S3;
 using Amazon.S3.Model;
-using BlockBot.AwsServices.Models;
-using BlockBot.AwsServices.Services;
+using BlockBot.Module.Aws.Models;
+using BlockBot.Module.Aws.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BlockBot.Tests.AwsServicesTests

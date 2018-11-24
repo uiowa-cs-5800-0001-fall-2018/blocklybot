@@ -79,7 +79,7 @@
             var xml_text = Blockly.Xml.domToText(xml);
 
             $.ajax({
-                url: '@Url.Action("PutProjectXml", "Workspace", new { id = Model.ProjectId })',
+                url: '@Url.Action("PutProjectXml", "Workspace", new { id = Model.Id })',
                 data: {
                     "xml": xml_text
                 },
@@ -87,7 +87,7 @@
             });
 
             $.ajax({
-                url: '@Url.Action("PutProjectCode", "Workspace", new { id = Model.ProjectId })',
+                url: '@Url.Action("PutProjectCode", "Workspace", new { id = Model.Id })',
                 data: {
                     "code": code
                 },

@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using BlockBot.Module.Aws.Extensions;
+using BlockBot.Module.SendGrid.Extensions;
+using BlockBot.Module.Twilio.Extensions;
 using BlockBot.Web.Data;
-using BlockBot.Web.Services.EmailSender;
+using BlockBot.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -92,23 +94,29 @@ namespace BlockBot.Web
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            //
             // Dependency injection registration
+            //
+
+            // register configuration object
             services.AddSingleton(Configuration);
 
-            services.AddSingleton<IEmailSender, SendGridEmailSender>();
-            services.Configure<AuthMessageSenderOptions>(Configuration);
+            // register AWS services
+            services.AddAwsCredentials(Configuration);
+            services.AddAwsRegion();
+            services.AddAwsServices();
 
-            services.AddTransient<IUserStore<ApplicationUser>, ApplicationUserStore>();
-            services.AddTransient<ApplicationUserStore, ApplicationUserStore>();
+            // register SendGrid services
+            services.AddSendGridServices();
 
-            services.AddTransient<IRoleStore<ApplicationRole>, ApplicationRoleStore>();
-            services.AddTransient<ApplicationRoleStore, ApplicationRoleStore>();
+            // register Twilio services
+            services.AddTwilioServices();
 
-            services.AddTransient<UserManager<ApplicationUser>, ApplicationUserManager>();
-            services.AddTransient<ApplicationUserManager, ApplicationUserManager>();
-
-            services.AddTransient<SignInManager<ApplicationUser>, ApplicationSignInManager>();
-            services.AddTransient<ApplicationSignInManager, ApplicationSignInManager>();
+            // register Identity services
+            services.AddUserStore();
+            services.AddRoleStore();
+            services.AddUserManager();
+            services.AddSignInManager();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

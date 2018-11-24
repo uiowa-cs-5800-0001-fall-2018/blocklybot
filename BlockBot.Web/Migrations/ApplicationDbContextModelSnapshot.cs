@@ -179,7 +179,7 @@ namespace BlockBot.Web.Migrations
 
             modelBuilder.Entity("BlockBot.Web.Data.Project", b =>
                 {
-                    b.Property<int>("ProjectId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -187,9 +187,11 @@ namespace BlockBot.Web.Migrations
 
                     b.Property<Guid>("OwnerId");
 
+                    b.Property<string>("RestApiId");
+
                     b.Property<string>("XML");
 
-                    b.HasKey("ProjectId");
+                    b.HasKey("Id");
 
                     b.HasIndex("OwnerId");
 

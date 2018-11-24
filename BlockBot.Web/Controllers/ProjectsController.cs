@@ -1,5 +1,8 @@
 ﻿using System.Linq;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using BlockBot.Module.Aws.Models;
+using BlockBot.Module.Aws.ServiceInterfaces;
 using BlockBot.Web.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,12 +15,18 @@ namespace BlockBot.Web.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly ApplicationUserManager _userManager;
+        private readonly UrlEncoder _urlEncoder;
+        private readonly IApiGatewayService _apiGatewayService;
 
         public ProjectsController(ApplicationDbContext context,
-            ApplicationUserManager userManager)
+            ApplicationUserManager userManager,
+            UrlEncoder urlEncoder,
+            IApiGatewayService apiGatewayService)
         {
             _context = context;
             _userManager = userManager;
+            _urlEncoder = urlEncoder;
+            _apiGatewayService = apiGatewayService;
         }
 
         // GET: Projects/Details/5
@@ -30,7 +39,7 @@ namespace BlockBot.Web.Controllers
 
             Project project = await _context.Projects
                 .Include(p => p.Owner)
-                .FirstOrDefaultAsync(m => m.ProjectId == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (project == null)
             {
                 return NotFound();
@@ -75,6 +84,10 @@ namespace BlockBot.Web.Controllers
                 project.XML =
                     "<xml xmlns=\"http://www.w3.org/1999/xhtml\" id=\"workspaceBlocks\" style=\"display: none;\"></xml>";
 
+                ApiGatewayRestApi result = await _apiGatewayService.CreateApiGateway(_urlEncoder.Encode(user.NormalizedUserName + "-" + project.Name).ToLowerInvariant(), "TODO add permalink to project");
+
+                project.RestApiId = result.RestApiId;
+
                 _context.Add(project);
                     await _context.SaveChangesAsync();
                 return RedirectToAction("Dashboard", "Dashboard");
@@ -118,7 +131,7 @@ namespace BlockBot.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ProjectId,Name")] Project project)
         {
-            if (id != project.ProjectId)
+            if (id != project.Id)
             {
                 return NotFound();
             }
@@ -150,7 +163,7 @@ namespace BlockBot.Web.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProjectExists(project.ProjectId))
+                    if (!ProjectExists(project.Id))
                     {
                         return NotFound();
                     }
@@ -174,7 +187,7 @@ namespace BlockBot.Web.Controllers
 
             Project project = await _context.Projects
                 .Include(p => p.Owner)
-                .FirstOrDefaultAsync(m => m.ProjectId == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (project == null)
             {
                 return NotFound();
@@ -218,6 +231,11 @@ namespace BlockBot.Web.Controllers
                 return Unauthorized();
             }
 
+            // exception should be thrown if delete fails
+            await _apiGatewayService.DeleteApiGateway(project.RestApiId);
+
+            // TODO delete S3 and Lambda resources
+
             _context.Projects.Remove(project);
             await _context.SaveChangesAsync();
             return RedirectToAction("Dashboard", "Dashboard");
@@ -225,7 +243,7 @@ namespace BlockBot.Web.Controllers
 
         private bool ProjectExists(int id)
         {
-            return _context.Projects.Any(e => e.ProjectId == id);
+            return _context.Projects.Any(e => e.Id == id);
         }
     }
 }

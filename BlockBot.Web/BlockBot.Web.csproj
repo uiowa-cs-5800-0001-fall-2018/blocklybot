@@ -18,10 +18,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BuildBundlerMinifier" Version="2.8.391" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.1.4" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.6" PrivateAssets="All" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="1.0.163" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.1.4" />
@@ -107,7 +108,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BlockBot.AwsServices\BlockBot.AwsServices.csproj" />
+    <ProjectReference Include="..\BlockBot.Module.Aws\BlockBot.Module.Aws.csproj" />
+    <ProjectReference Include="..\BlockBot.Module.SendGrid\BlockBot.Module.SendGrid.csproj" />
+    <ProjectReference Include="..\BlockBot.Module.Twilio\BlockBot.Module.Twilio.csproj" />
   </ItemGroup>
 
   <ItemGroup>

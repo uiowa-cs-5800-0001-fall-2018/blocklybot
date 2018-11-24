@@ -1,5 +1,6 @@
-﻿@using BlockBot.Web.Views.Shared
-@inject SignInManager<IdentityUser> SignInManager
+﻿@using BlockBot.Web.Data
+@using BlockBot.Web.Views.Shared
+@inject ApplicationSignInManager SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }

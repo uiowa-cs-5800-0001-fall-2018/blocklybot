@@ -13,7 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BlockBot.AwsServices\BlockBot.AwsServices.csproj" />
+    <ProjectReference Include="..\BlockBot.Module.Aws\BlockBot.Module.Aws.csproj" />
+    <ProjectReference Include="..\BlockBot.Module.SendGrid\BlockBot.Module.SendGrid.csproj" />
+    <ProjectReference Include="..\BlockBot.Module.Twilio\BlockBot.Module.Twilio.csproj" />
   </ItemGroup>
 
   <ItemGroup>

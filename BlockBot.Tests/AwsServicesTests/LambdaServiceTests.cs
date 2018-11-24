@@ -5,8 +5,8 @@ using Amazon;
 using Amazon.Runtime.CredentialManagement;
 using Amazon.S3;
 using Amazon.S3.Model;
-using BlockBot.AwsServices.Models;
-using BlockBot.AwsServices.Services;
+using BlockBot.Module.Aws.Models;
+using BlockBot.Module.Aws.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BlockBot.Tests.AwsServicesTests
@@ -130,8 +130,9 @@ namespace BlockBot.Tests.AwsServicesTests
             LambdaFunction lambdaRead1 = _lambdaService.ReadLamda(functionName).Result;
             // TODO download code and check for string
 
-            bool lambdaUpdateSucceeded = _lambdaService.UpdateLambda(functionName, bucket, key2).Result;
-            Assert.IsTrue(lambdaUpdateSucceeded);
+            // exception thrown if there is an error during update
+            string lambdaUpdateSucceeded = _lambdaService.UpdateLambda(functionName, bucket, key2).Result;
+            // Assert.IsTrue(lambdaUpdateSucceeded);
 
             LambdaFunction lambdaRead2 = _lambdaService.ReadLamda(functionName).Result;
             // TODO download code and check for string
