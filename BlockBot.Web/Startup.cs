@@ -129,10 +129,8 @@ namespace BlockBot.Web
             }
             else
             {
-                app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
-                //app.UseExceptionHandler("/Home/Error");
-                //app.UseHsts();
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
             }
 
             app.UseHttpsRedirection();
