@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlockBot.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20181112182034_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20181126203335_AddProjectDescription")]
+    partial class AddProjectDescription
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -181,17 +181,26 @@ namespace BlockBot.Web.Migrations
 
             modelBuilder.Entity("BlockBot.Web.Data.Project", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(2000);
+
+                    b.Property<bool>("IsPublic");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200);
 
                     b.Property<Guid>("OwnerId");
 
-                    b.Property<string>("RestApiId");
+                    b.Property<string>("RestApiId")
+                        .IsRequired();
 
-                    b.Property<string>("XML");
+                    b.Property<string>("XML")
+                        .IsRequired();
 
                     b.HasKey("Id");
 

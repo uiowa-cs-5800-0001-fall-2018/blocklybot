@@ -157,12 +157,12 @@ namespace BlockBot.Web.Migrations
                 name: "Projects",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<Guid>(nullable: false),
                     OwnerId = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     XML = table.Column<string>(nullable: true),
-                    RestApiId = table.Column<string>(nullable: true)
+                    RestApiId = table.Column<string>(nullable: true),
+                    IsPublic = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {

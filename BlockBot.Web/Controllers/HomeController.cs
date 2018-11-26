@@ -1,4 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using BlockBot.Web.Data;
 using BlockBot.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,9 +12,17 @@ namespace BlockBot.Web.Controllers
     [AllowAnonymous]
     public class HomeController : Controller
     {
+        private readonly ApplicationDbContext _context;
+
+        public HomeController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult Index()
         {
-            return View();
+            IList<Project> projects = _context.Projects.Where(x => x.IsPublic).Take(9).ToList();
+            return View(projects);
         }
 
         public IActionResult About()

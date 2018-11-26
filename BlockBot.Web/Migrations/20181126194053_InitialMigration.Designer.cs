@@ -4,14 +4,16 @@ using BlockBot.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BlockBot.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181126194053_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -182,23 +184,15 @@ namespace BlockBot.Web.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(2000);
-
                     b.Property<bool>("IsPublic");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200);
+                    b.Property<string>("Name");
 
                     b.Property<Guid>("OwnerId");
 
-                    b.Property<string>("RestApiId")
-                        .IsRequired();
+                    b.Property<string>("RestApiId");
 
-                    b.Property<string>("XML")
-                        .IsRequired();
+                    b.Property<string>("XML");
 
                     b.HasKey("Id");
 

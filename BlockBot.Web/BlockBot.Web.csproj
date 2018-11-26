@@ -102,6 +102,9 @@
     <Content Update="Views\Dashboard\Dashboard.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Docs\Index.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Workspace\Workspace.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
