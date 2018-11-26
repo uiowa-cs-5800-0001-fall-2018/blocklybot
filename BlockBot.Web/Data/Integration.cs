@@ -15,8 +15,7 @@ namespace BlockBot.Web.Data
 
         public Guid ApplicationUserId { get; set; }
 
-        // TODO convert to Guid
-        public int ProjectId { get; set; }
+        public Guid ProjectId { get; set; }
 
         public Guid ServiceId { get; set; }
 

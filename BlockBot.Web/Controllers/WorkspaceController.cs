@@ -47,14 +47,9 @@ namespace BlockBot.Web.Controllers
         /// </summary>
         /// <param name="id">The project id</param>
         /// <returns></returns>
-        public async Task<IActionResult> Workspace(int? id)
+        public async Task<IActionResult> Workspace(Guid id)
         {
             ViewData["Message"] = "A workspace for editing programs";
-
-            if (id == null)
-            {
-                return NotFound();
-            }
 
             Project project = await _context.Projects
                 .FirstOrDefaultAsync(m => m.Id == id);
