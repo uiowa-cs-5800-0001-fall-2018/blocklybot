@@ -9,7 +9,6 @@ using Amazon.S3;
 using BlockBot.Module.Aws.Models;
 using BlockBot.Module.Aws.ServiceInterfaces;
 using BlockBot.Module.Twilio.ServiceInterfaces;
-using BlockBot.Module.Twilio.Services;
 using BlockBot.Web.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

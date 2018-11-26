@@ -27,4 +27,10 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Web\" />
+    <Folder Include="Twilio\" />
+    <Folder Include="SendGrid\" />
+  </ItemGroup>
+
 </Project>

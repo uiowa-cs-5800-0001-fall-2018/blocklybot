@@ -5,18 +5,16 @@ using BlockBot.Module.Aws.Models;
 using BlockBot.Module.Aws.ServiceInterfaces;
 using BlockBot.Web.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 
 namespace BlockBot.Web.Controllers
 {
     public class ProjectsController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        private readonly ApplicationUserManager _userManager;
-        private readonly UrlEncoder _urlEncoder;
         private readonly IApiGatewayService _apiGatewayService;
+        private readonly ApplicationDbContext _context;
+        private readonly UrlEncoder _urlEncoder;
+        private readonly ApplicationUserManager _userManager;
 
         public ProjectsController(ApplicationDbContext context,
             ApplicationUserManager userManager,
@@ -84,12 +82,14 @@ namespace BlockBot.Web.Controllers
                 project.XML =
                     "<xml xmlns=\"http://www.w3.org/1999/xhtml\" id=\"workspaceBlocks\" style=\"display: none;\"></xml>";
 
-                ApiGatewayRestApi result = await _apiGatewayService.CreateApiGateway(_urlEncoder.Encode(user.NormalizedUserName + "-" + project.Name).ToLowerInvariant(), "TODO add permalink to project");
+                ApiGatewayRestApi result = await _apiGatewayService.CreateApiGateway(
+                    _urlEncoder.Encode(user.NormalizedUserName + "-" + project.Name).ToLowerInvariant(),
+                    "TODO add permalink to project");
 
                 project.RestApiId = result.RestApiId;
 
                 _context.Add(project);
-                    await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                 return RedirectToAction("Dashboard", "Dashboard");
             }
 
@@ -120,7 +120,7 @@ namespace BlockBot.Web.Controllers
             {
                 return Unauthorized();
             }
-            
+
             return View(project);
         }
 
@@ -144,7 +144,7 @@ namespace BlockBot.Web.Controllers
 
             Project originalProject = await _context.Projects.FindAsync(id);
 
-            if (originalProject == null) 
+            if (originalProject == null)
             {
                 return NotFound();
             }
