@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.InteropServices;
 using Microsoft.Extensions.Configuration;
 
 namespace BlockBot.Web.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid, ApplicationUserClaim, ApplicationUserRole, ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid, ApplicationUserClaim,
+        ApplicationUserRole, ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>
     {
         private readonly IConfiguration configuration;
 
@@ -16,13 +17,25 @@ namespace BlockBot.Web.Data
             this.configuration = configuration;
         }
 
+        public virtual DbSet<Deployment> Deployments { get; set; }
+
+        public virtual DbSet<Integration> Integrations { get; set; }
+
+        public virtual DbSet<Project> Projects { get; set; }
+
+        public virtual DbSet<ProjectSetting> ProjectSettings { get; set; }
+
+        public virtual DbSet<ProjectSettingType> ProjectSettingType { get; set; }
+
+        public virtual DbSet<Service> Services { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 optionsBuilder
-                       .UseLazyLoadingProxies()
-                       .UseSqlite(configuration.GetConnectionString("MacConnection"));
+                    .UseLazyLoadingProxies()
+                    .UseSqlite(configuration.GetConnectionString("MacConnection"));
             }
             else
             {
@@ -77,8 +90,47 @@ namespace BlockBot.Web.Data
                     .HasForeignKey(rc => rc.RoleId)
                     .IsRequired();
             });
-        }
 
-        public virtual DbSet<Project> Projects { get; set; }
+            // Project Setting Type seed values
+            modelBuilder.Entity<ProjectSettingType>().HasData(
+                new ProjectSettingType
+                {
+                    Id = new Guid("2078335c-4dea-48e6-8248-1c9cee3f1a1b"),
+                    Name = "AwsAccessKey",
+                    AllowsMany = false
+                },
+                new ProjectSettingType
+                {
+                    Id = new Guid("2e10e0a3-f121-4b3b-a80d-2bad25e58064"),
+                    Name = "AwsSecretKey",
+                    AllowsMany = false
+                },
+                new ProjectSettingType
+                {
+                    Id = new Guid("9ff16deb-455c-45b3-940f-c5908ac2ddc2"),
+                    Name = "TwilioAccountSid",
+                    AllowsMany = false
+                },
+                new ProjectSettingType
+                {
+                    Id = new Guid("cf1732d4-96c5-4c84-8689-6059d84ec6c7"),
+                    Name = "TwilioAuthToken",
+                    AllowsMany = false
+                });
+
+            // Service seed values
+            modelBuilder.Entity<Service>().HasData(
+                new Service
+                {
+                    Id = new Guid("28ce5d09-b126-44f2-80dd-13ec30e8b89b"),
+                    Name = "BlockBot"
+                },
+                new Service
+                {
+                    Id = new Guid("eed6a6b3-33d1-4e25-bd0c-1fc726bbf2de"),
+                    Name = "Twilio"
+                }
+                );
+        }
     }
 }

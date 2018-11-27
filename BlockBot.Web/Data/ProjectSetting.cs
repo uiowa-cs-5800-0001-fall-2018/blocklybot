@@ -7,13 +7,22 @@ using System.Threading.Tasks;
 
 namespace BlockBot.Web.Data
 {
-    public class Service
+    public class ProjectSetting
     {
         [ScaffoldColumn(false)]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
-        public string Name { get; set; }
+        public string Value { get; set; }
+
+        public Guid ProjectId { get; set; }
+        [ScaffoldColumn(false)]
+        public virtual Project Project { get; set; }
+
+        public Guid ProjectSettingTypeId { get; set; }
+        [ScaffoldColumn(false)]
+        public virtual ProjectSettingType ProjectSettingType { get; set; }
+
     }
 }

@@ -40,5 +40,10 @@ namespace BlockBot.Web.Data
         [MaxLength(2000)]
         [Required]
         public string Description { get; set; }
+
+        public string S3BucketName()
+        {
+            return "blockbot-" + Id;
+        }
     }
 }

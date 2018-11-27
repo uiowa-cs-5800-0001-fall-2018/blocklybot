@@ -422,6 +422,8 @@ namespace BlockBot.Web.Controllers
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     //await _signInManager.SignInAsync(user, isPersistent: false);
+                    TempData["Message"] =
+                        "Check your inbox for an email from admin@blockbot.io with a link to confirm your account.";
                     return LocalRedirect(returnUrl);
                 }
 

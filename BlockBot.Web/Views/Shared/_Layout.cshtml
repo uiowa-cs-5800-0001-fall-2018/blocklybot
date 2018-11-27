@@ -6,12 +6,14 @@
     <title>@ViewData["Title"] - FundamentalsChatbot</title>
 
     <environment include="Development">
-        <link href="~/lib/twitter-bootstrap/css/bootstrap.css" rel="stylesheet"/>
-        <link rel="stylesheet" href="~/css/site.css"/>
+        <link href="~/lib/twitter-bootstrap/css/bootstrap.css" rel="stylesheet" />
+        <link href="~/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
+        <link rel="stylesheet" href="~/css/site.css" />
     </environment>
     <environment exclude="Development">
-        <link rel="stylesheet" href="~/lib/twitter-bootstrap/css/bootstrap.min.css"/>
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true"/>
+        <link rel="stylesheet" href="~/lib/twitter-bootstrap/css/bootstrap.min.css" />
+        <link href="~/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
 
     @RenderSection("Css", false)
@@ -51,6 +53,16 @@
 
 <main role="main" class="container body-content">
     <partial name="_CookieConsentPartial"/>
+    
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-primary alert-dismissible" role="alert">
+            @TempData["Message"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
 
     @RenderBody()
     <hr/>

@@ -3,12 +3,20 @@ goog.require('Blockly');
 
 Blockly.defineBlocksWithJsonArray(
     [{
-      "type": "receive_message",
+      "type": "start_conversation",
       "lastDummyAlign0": "CENTRE",
       "message0": "Start conversation",
       "nextStatement": null,
       "colour": 230,
-      "tooltip": "This block runs when a message is received from the user",
+      "tooltip": "This block runs when a message is received from the user.",
+      "helpUrl": ""
+    },
+    {
+      "type": "end_conversation",
+      "message0": "End conversation",
+      "previousStatement": null,
+      "colour": 230,
+      "tooltip": "This block marks a conversation as complete. Future messages from this sender will be treated like a new conversation.",
       "helpUrl": ""
     },
     {
@@ -97,6 +105,14 @@ Blockly.defineBlocksWithJsonArray(
       "tooltip": "",
       "helpUrl": ""
     },
+
+
+
+
+
+
+
+
     {
       "type": "options",
       "message0": "Prompt %1 Present Options %2",
@@ -108,7 +124,8 @@ Blockly.defineBlocksWithJsonArray(
         },
         {
           "type": "input_statement",
-          "name": "NAME"
+          "name": "NAME",
+          "check": "options"
         }
       ],
       "previousStatement": null,
@@ -166,6 +183,16 @@ Blockly.defineBlocksWithJsonArray(
       "tooltip": "Present a list of options to the user and let them select one. End with an alternative input prompt. If the user does not select an option, the alternative block will be run.",
       "helpUrl": ""
     },
+
+
+
+
+
+
+
+
+
+
     {
       "type": "calendar_create_appt",
       "lastDummyAlign0": "RIGHT",
@@ -238,7 +265,7 @@ Blockly.defineBlocksWithJsonArray(
           ]
         }
       ],
-      "output": null,
+      "output": "calendar",
       "colour": 230,
       "tooltip": "",
       "helpUrl": ""
@@ -290,5 +317,21 @@ Blockly.defineBlocksWithJsonArray(
       "output": null,
       "colour": 230,
       "tooltip": "",
+      "helpUrl": ""
+    },
+    {
+      "type": "calendar_get_name",
+      "message0": "Get Calendar Name %1",
+      "args0": [
+        {
+          "type": "input_value",
+          "name": "CALENDAR",
+          "check": "calendar"
+        }
+      ],
+      "inputsInline": false,
+      "output": "String",
+      "colour": 230,
+      "tooltip": "Gets the name of a specific calendar.",
       "helpUrl": ""
     }]);

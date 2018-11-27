@@ -74,7 +74,7 @@ namespace BlockBot.Web.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> PutProjectXml(int id, string xml)
+        public async Task<IActionResult> PutProjectXml(Guid id, string xml)
         {
             Project project = await _context.Projects.FindAsync(id);
             if (project == null)
@@ -100,7 +100,7 @@ namespace BlockBot.Web.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> PutProjectCode(int id, string code)
+        public async Task<IActionResult> PutProjectCode(Guid id, string code)
         {
             Project project = await _context.Projects.FindAsync(id);
             if (project == null)
@@ -121,7 +121,7 @@ namespace BlockBot.Web.Controllers
 
             // calculate magic strings
             string serviceName = "twilio";
-            string integrationName = user.Id + "-" + project.Id + "-" + serviceName;
+            string integrationName = project.Id + "-" + serviceName;
             string outKey = integrationName + ".zip";
 
             string templateKey = serviceName + ".zip";

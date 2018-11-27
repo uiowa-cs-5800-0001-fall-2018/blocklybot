@@ -1,3 +1,12 @@
+Blockly.JavaScript['start_conversation'] = function(block) {
+    var code = '...;\n'; // TODO log conversation in DynamoDB
+    return code;
+};
+
+Blockly.JavaScript['end_conversation'] = function(block) {
+    var code = '...;\n'; // TODO log end of conversation in DynamoDB
+    return code;
+};
 
 Blockly.JavaScript['send_message'] = function(block) {
     var value_message_text = Blockly.JavaScript.valueToCode(block, 'message_text', Blockly.JavaScript.ORDER_ATOMIC);
@@ -6,10 +15,7 @@ Blockly.JavaScript['send_message'] = function(block) {
     return code;
 };
 
-Blockly.JavaScript['receive_message'] = function(block) {
-    var code = ''; // does nothing - handled by lambda function
-    return code;
-};
+
 
 Blockly.JavaScript['get_message_body'] = function(block) {
     var code = 'twilio_request.Body';
@@ -92,6 +98,14 @@ Blockly.JavaScript['calendar_next_available'] = function(block) {
 };
 
 Blockly.JavaScript['datetime'] = function(block) {
+    // TODO: Assemble JavaScript into code variable.
+    var code = '...';
+    // TODO: Change ORDER_NONE to the correct strength.
+    return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['calendar_get_name'] = function(block) {
+    var value_calendar = Blockly.JavaScript.valueToCode(block, 'CALENDAR', Blockly.JavaScript.ORDER_ATOMIC);
     // TODO: Assemble JavaScript into code variable.
     var code = '...';
     // TODO: Change ORDER_NONE to the correct strength.

@@ -48,6 +48,31 @@ namespace BlockBot.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ProjectSettingType",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    AllowsMany = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProjectSettingType", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Services",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Services", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -159,10 +184,11 @@ namespace BlockBot.Web.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     OwnerId = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(maxLength: 200, nullable: false),
                     XML = table.Column<string>(nullable: true),
                     RestApiId = table.Column<string>(nullable: true),
-                    IsPublic = table.Column<bool>(nullable: false)
+                    IsPublic = table.Column<bool>(nullable: false),
+                    Description = table.Column<string>(maxLength: 2000, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -171,6 +197,76 @@ namespace BlockBot.Web.Migrations
                         name: "FK_Projects_AspNetUsers_OwnerId",
                         column: x => x.OwnerId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Integrations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    ProjectId = table.Column<Guid>(nullable: false),
+                    ServiceId = table.Column<Guid>(nullable: false),
+                    Url = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Integrations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Integrations_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Integrations_Services_ServiceId",
+                        column: x => x.ServiceId,
+                        principalTable: "Services",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProjectSettings",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Value = table.Column<string>(nullable: true),
+                    ProjectId = table.Column<Guid>(nullable: false),
+                    ProjectSettingTypeId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProjectSettings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProjectSettings_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProjectSettings_ProjectSettingType_ProjectSettingTypeId",
+                        column: x => x.ProjectSettingTypeId,
+                        principalTable: "ProjectSettingType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Deployments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    IntegrationId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Deployments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Deployments_Integrations_IntegrationId",
+                        column: x => x.IntegrationId,
+                        principalTable: "Integrations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -215,9 +311,34 @@ namespace BlockBot.Web.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Deployments_IntegrationId",
+                table: "Deployments",
+                column: "IntegrationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Integrations_ProjectId",
+                table: "Integrations",
+                column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Integrations_ServiceId",
+                table: "Integrations",
+                column: "ServiceId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Projects_OwnerId",
                 table: "Projects",
                 column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProjectSettings_ProjectId",
+                table: "ProjectSettings",
+                column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProjectSettings_ProjectSettingTypeId",
+                table: "ProjectSettings",
+                column: "ProjectSettingTypeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -238,10 +359,25 @@ namespace BlockBot.Web.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Projects");
+                name: "Deployments");
+
+            migrationBuilder.DropTable(
+                name: "ProjectSettings");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Integrations");
+
+            migrationBuilder.DropTable(
+                name: "ProjectSettingType");
+
+            migrationBuilder.DropTable(
+                name: "Projects");
+
+            migrationBuilder.DropTable(
+                name: "Services");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

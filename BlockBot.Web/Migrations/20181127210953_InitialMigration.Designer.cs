@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlockBot.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20181126203335_AddProjectDescription")]
-    partial class AddProjectDescription
+    [Migration("20181127210953_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -179,6 +179,40 @@ namespace BlockBot.Web.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("BlockBot.Web.Data.Deployment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("IntegrationId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IntegrationId");
+
+                    b.ToTable("Deployments");
+                });
+
+            modelBuilder.Entity("BlockBot.Web.Data.Integration", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("ProjectId");
+
+                    b.Property<Guid>("ServiceId");
+
+                    b.Property<string>("Url");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("Integrations");
+                });
+
             modelBuilder.Entity("BlockBot.Web.Data.Project", b =>
                 {
                     b.Property<Guid>("Id")
@@ -196,17 +230,61 @@ namespace BlockBot.Web.Migrations
 
                     b.Property<Guid>("OwnerId");
 
-                    b.Property<string>("RestApiId")
-                        .IsRequired();
+                    b.Property<string>("RestApiId");
 
-                    b.Property<string>("XML")
-                        .IsRequired();
+                    b.Property<string>("XML");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OwnerId");
 
                     b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("BlockBot.Web.Data.ProjectSetting", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("ProjectId");
+
+                    b.Property<Guid>("ProjectSettingTypeId");
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("ProjectSettingTypeId");
+
+                    b.ToTable("ProjectSettings");
+                });
+
+            modelBuilder.Entity("BlockBot.Web.Data.ProjectSettingType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("AllowsMany");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProjectSettingType");
+                });
+
+            modelBuilder.Entity("BlockBot.Web.Data.Service", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Services");
                 });
 
             modelBuilder.Entity("BlockBot.Web.Data.ApplicationRoleClaim", b =>
@@ -254,11 +332,45 @@ namespace BlockBot.Web.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("BlockBot.Web.Data.Deployment", b =>
+                {
+                    b.HasOne("BlockBot.Web.Data.Integration", "Integration")
+                        .WithMany()
+                        .HasForeignKey("IntegrationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("BlockBot.Web.Data.Integration", b =>
+                {
+                    b.HasOne("BlockBot.Web.Data.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("BlockBot.Web.Data.Service", "Service")
+                        .WithMany()
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("BlockBot.Web.Data.Project", b =>
                 {
                     b.HasOne("BlockBot.Web.Data.ApplicationUser", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("BlockBot.Web.Data.ProjectSetting", b =>
+                {
+                    b.HasOne("BlockBot.Web.Data.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("BlockBot.Web.Data.ProjectSettingType", "ProjectSettingType")
+                        .WithMany()
+                        .HasForeignKey("ProjectSettingTypeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

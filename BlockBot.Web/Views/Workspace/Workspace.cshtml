@@ -3,22 +3,18 @@
     ViewData["Title"] = "Workspace";
 }
 
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-            <a href="@Url.Action("Dashboard", "Dashboard")">Dashboard</a>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">Workspace</li>
-    </ol>
-</nav>
-
-<button class="btn btn-primary" onclick="executeWorkspace()">Save</button>
-
+<div class="container">
+    <a href="@Url.Action("Dashboard", "Dashboard")" class="btn btn-secondary">Back to Dashboard</a>
+    <button class="btn btn-primary" onclick="executeWorkspace()">Save</button>
+    <div id="save-spinner" class="fa fa-spinner fa-spin" style="display: none;"></div>
+    <p id="save-message" class="d-inline text-danger"></p>
+</div>
+<br/>
 <div class="container">
     <div id="blocklyDiv" style="height: 64vh; width: auto;"></div>
 </div>
 
-<partial name="_ToolboxPartial" />
+<partial name="_ToolboxPartial"/>
 
 <div style="display: none;">
     @Html.Raw(Model.XML)
@@ -58,43 +54,64 @@
             oneBasedIndex: true
         };
 
-        /* Inject your workspace */
         var workspace = Blockly.inject('blocklyDiv', options);
-
-        //
         var workspaceBlocks = document.getElementById("workspaceBlocks");
 
-        /* Load blocks to workspace. */
         Blockly.Xml.domToWorkspace(workspaceBlocks, workspace);
 
         var xml = Blockly.Xml.workspaceToDom(workspace);
         var xml_text = Blockly.Xml.domToText(xml);
 
         function executeWorkspace() {
-            Blockly.JavaScript.addReservedWords('code');
-            var code = Blockly.JavaScript.workspaceToCode(workspace);
+            document.getElementById("save-spinner").style.display = "inline-block";
+            document.getElementById("save-message").innerHTML = "";
 
-            var xml = Blockly.Xml.workspaceToDom(workspace);
-            xml.id = "workspaceBlocks";
-            var xml_text = Blockly.Xml.domToText(xml);
+            try {
+                // convert blocks to code and xml
+                Blockly.JavaScript.addReservedWords('code');
+                var code = Blockly.JavaScript.workspaceToCode(workspace);
+
+                var xml = Blockly.Xml.workspaceToDom(workspace);
+                xml.id = "workspaceBlocks";
+                var xml_text = Blockly.Xml.domToText(xml);
+            }
+            catch(err) {
+                console.log(err.message);
+                document.getElementById("save-message").innerHTML = err.message;
+            }
 
             $.ajax({
-                url: '@Url.Action("PutProjectXml", "Workspace", new { id = Model.Id })',
+                url: '@Url.Action("PutProjectXml", "Workspace", new {id = Model.Id})',
                 data: {
                     "xml": xml_text
                 },
-                method: 'PUT'
-            });
-
-            $.ajax({
-                url: '@Url.Action("PutProjectCode", "Workspace", new { id = Model.Id })',
-                data: {
-                    "code": code
+                method: 'PUT',
+                success: function() {
+                    $.ajax({
+                        url: '@Url.Action("PutProjectCode", "Workspace", new {id = Model.Id})',
+                        data: {
+                            "code": code
+                        },
+                        method: 'PUT',
+                        success: function() {
+                            document.getElementById("save-spinner").style.display = "none";
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            document.getElementById("save-spinner").style.display = "none";
+                            console.log(errorThrown);
+                            document.getElementById("save-message").innerHTML = errorThrown;
+                        }
+                    });
                 },
-                method: 'PUT'
+                error: function (jqXHR, textStatus, errorThrown) {
+                    document.getElementById("save-spinner").style.display = "none";
+                    console.log(errorThrown);
+                    document.getElementById("save-message").innerHTML = errorThrown;
+                }
             });
 
-            console.log(code);
+            
+
         }
     </script>
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Amazon.S3;
 using BlockBot.Module.Aws.Models;
 using BlockBot.Module.Aws.ServiceInterfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -14,19 +15,22 @@ namespace BlockBot.Web.Controllers
 {
     public class ProjectsController : Controller
     {
-        private readonly IApiGatewayService _apiGatewayService;
         private readonly ApplicationDbContext _context;
-        private readonly UrlEncoder _urlEncoder;
         private readonly ApplicationUserManager _userManager;
+        private readonly IApiGatewayService _apiGatewayService;
+        private readonly ILambdaService _lambdaService;
+        private readonly IS3Service _s3Service;
 
         public ProjectsController(ApplicationDbContext context,
             ApplicationUserManager userManager,
-            UrlEncoder urlEncoder,
-            IApiGatewayService apiGatewayService){
+            IApiGatewayService apiGatewayService,
+            ILambdaService lambdaService,
+            IS3Service s3Service){
             _context = context;
             _userManager = userManager;
-            _urlEncoder = urlEncoder;
             _apiGatewayService = apiGatewayService;
+            _lambdaService = lambdaService;
+            _s3Service = s3Service;
         }
 
         // GET: Projects/Details/5
@@ -81,14 +85,45 @@ namespace BlockBot.Web.Controllers
                 project.OwnerId = user.Id;
                 project.XML =
                     "<xml xmlns=\"http://www.w3.org/1999/xhtml\" id=\"workspaceBlocks\" style=\"display: none;\"></xml>";
-                ApiGatewayRestApi result = await _apiGatewayService.CreateApiGateway(
-                    _urlEncoder.Encode(user.NormalizedUserName + "-" + project.Name).ToLowerInvariant(),
-                    "TODO add permalink to project");
-                project.RestApiId = result.RestApiId;
-
                 project.Id = Guid.NewGuid();
+
+                // TODO create IAM user for project?
+
+                // create API Gateway
+                // TODO convert this to use prod url after sufficient debugging
+                ApiGatewayRestApi result = await _apiGatewayService.CreateApiGateway(
+                    project.Id.ToString(),
+                    "https://localhost:44305/Projects/Details/" + project.Id);
+                project.RestApiId = result.RestApiId;
                 _context.Add(project);
+
+                // create s3 bucket
+                bool bucketCreateSucceeded = await _s3Service.CreateOrUpdateBucket(project.S3BucketName(), S3CannedACL.Private);
+                if (!bucketCreateSucceeded)
+                {
+                    string message = "Unable to create an S3 bucket.";
+                    // TODO log message to ILogger
+                    return RedirectToAction("Error", "Home", new { message });
+                }
+
+                // add BlockBot integration
+                Service blockBotService = await _context.Services.FirstOrDefaultAsync(x => x.Name == "BlockBot");
+                if (blockBotService == null)
+                {
+                    string message = "Unable to locate the BlockBot service.";
+                    // TODO log message to ILogger
+                    return RedirectToAction("Error", "Home", new { message });
+                }
+                _context.Integrations.Add(new Integration
+                {
+                    Id = Guid.NewGuid(),
+                    ProjectId = project.Id,
+                    ServiceId = blockBotService.Id
+                });
+
+                // save changes
                 await _context.SaveChangesAsync();
+                
                 return RedirectToAction("Dashboard", "Dashboard");
             }
 
@@ -226,9 +261,31 @@ namespace BlockBot.Web.Controllers
             {
                 return Unauthorized();
             }
-            // exception should be thrown if delete fails
-            await _apiGatewayService.DeleteApiGateway(project.RestApiId);
-            // TODO delete S3 and Lambda resources, Twilio resources
+
+            // delete API gateway
+            ApiGatewayRestApiDelete y = await _apiGatewayService.DeleteApiGateway(project.RestApiId);
+            // TODO throw error on failure
+
+            // delete lambdas
+            foreach (Integration integration in _context.Integrations.Where(x => x.ProjectId == id))
+            {
+                bool result = await _lambdaService.DeleteLambda(integration.FunctionName());
+                // TODO throw error on failure
+
+                if (integration.Service.Name == "Twilio")
+                {
+                    // TODO delete Twilio resources
+                    // TODO throw error on failure
+                }
+
+                _context.Integrations.Remove(integration);
+            }
+
+            // delete S3 bucket
+            var z = await _s3Service.DeleteBucket(project.S3BucketName());
+            // TODO throw error on failure
+
+            // delete IAM user?
 
             _context.Projects.Remove(project);
             await _context.SaveChangesAsync();
