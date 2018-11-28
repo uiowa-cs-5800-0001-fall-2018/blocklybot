@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BlockBot.Module.Aws\BlockBot.Module.Aws.csproj" />
+    <ProjectReference Include="..\BlockBot.Module.BlockBot\BlockBot.Module.BlockBot.csproj" />
+    <ProjectReference Include="..\BlockBot.Module.Twilio\BlockBot.Module.Twilio.csproj" />
+  </ItemGroup>
+
+</Project>

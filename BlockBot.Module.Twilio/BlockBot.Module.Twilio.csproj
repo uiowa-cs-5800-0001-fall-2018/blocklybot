@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BlockBot.Common\BlockBot.Common.csproj" />
+    <ProjectReference Include="..\BlockBot.Module.Aws\BlockBot.Module.Aws.csproj" />
   </ItemGroup>
 
   <ItemGroup>

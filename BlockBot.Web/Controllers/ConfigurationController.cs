@@ -42,5 +42,11 @@ namespace BlockBot.Web.Controllers
             
             return new OkResult();
         }
+
+        public async Task<IActionResult> CreateIntegrationTemplatesBucket()
+        {
+            string sourceBucket = "blockbot-integration-templates";
+            throw new NotImplementedException();
+        }
     }
 }
