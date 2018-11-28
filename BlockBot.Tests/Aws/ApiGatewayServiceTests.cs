@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.IO.Compression;
 using System.Text;
-using System.Threading;
 using Amazon;
 using Amazon.APIGateway.Model;
 using Amazon.Runtime.CredentialManagement;
@@ -11,7 +10,7 @@ using BlockBot.Module.Aws.Models;
 using BlockBot.Module.Aws.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace BlockBot.Tests.AwsServicesTests
+namespace BlockBot.Tests.Aws
 {
     [TestClass]
     public class ApiGatewayServiceTests

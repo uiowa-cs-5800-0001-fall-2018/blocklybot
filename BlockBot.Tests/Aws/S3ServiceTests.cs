@@ -10,7 +10,7 @@ using Amazon.S3.Model;
 using BlockBot.Module.Aws.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace BlockBot.Tests.AwsServicesTests
+namespace BlockBot.Tests.Aws
 {
     [TestClass]
     public class S3ServiceTests

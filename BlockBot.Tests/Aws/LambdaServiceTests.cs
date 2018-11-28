@@ -9,7 +9,7 @@ using BlockBot.Module.Aws.Models;
 using BlockBot.Module.Aws.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace BlockBot.Tests.AwsServicesTests
+namespace BlockBot.Tests.Aws
 {
     [TestClass]
     public class LambdaServiceTests

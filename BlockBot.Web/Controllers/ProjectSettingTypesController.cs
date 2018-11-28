@@ -6,9 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BlockBot.Web.Data;
+using BlockBot.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BlockBot.Web.Controllers
 {
+    [Authorize(Roles="Admin")]
     public class ProjectSettingTypesController : Controller
     {
         private readonly ApplicationDbContext _context;

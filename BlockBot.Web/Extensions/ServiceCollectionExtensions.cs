@@ -29,6 +29,14 @@ namespace BlockBot.Web.Extensions
             services.AddTransient<ApplicationUserManager, ApplicationUserManager>();
             return services;
         }
+
+        public static IServiceCollection AddRoleManager(this IServiceCollection services)
+        {
+            services.AddTransient<RoleManager<ApplicationRole>, ApplicationRoleManager>();
+            services.AddTransient<ApplicationRoleManager, ApplicationRoleManager>();
+            return services;
+        }
+
         public static IServiceCollection AddSignInManager(this IServiceCollection services)
         {
             services.AddTransient<SignInManager<ApplicationUser>, ApplicationSignInManager>();

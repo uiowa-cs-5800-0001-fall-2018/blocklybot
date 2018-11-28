@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using BlockBot.Module.Aws.Extensions;
+using BlockBot.Module.BlockBot.Extensions;
 using BlockBot.Module.SendGrid.Extensions;
 using BlockBot.Module.Twilio.Extensions;
 using BlockBot.Web.Data;
@@ -106,16 +107,21 @@ namespace BlockBot.Web
             services.AddAwsRegion();
             services.AddAwsServices();
 
+            // register BlockBot services
+            services.AddBlockBotIntegrationServices();
+
             // register SendGrid services
             services.AddSendGridServices();
 
             // register Twilio services
             services.AddTwilioServices();
+            services.AddTwilioIntegrationServices();
 
             // register Identity services
             services.AddUserStore();
             services.AddRoleStore();
             services.AddUserManager();
+            services.AddRoleManager();
             services.AddSignInManager();
         }
 

@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BlockBot.Web.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BlockBot.Web.Controllers
 {
+    [Authorize(Roles="Admin")]
     public class ServicesController : Controller
     {
         private readonly ApplicationDbContext _context;
