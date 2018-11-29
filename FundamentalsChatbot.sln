@@ -13,11 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlockBot.Module.Aws", "Bloc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlockBot.Module.Twilio", "BlockBot.Module.Twilio\BlockBot.Module.Twilio.csproj", "{2D2A5F32-C2CC-4AFF-A575-D4C41100B424}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlockBot.Module.BlockBot", "BlockBot.Module.BlockBot\BlockBot.Module.BlockBot.csproj", "{06338AB4-A15B-46D2-9F8A-F4AC2A7D2CA7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlockBot.Module.BlockBot", "BlockBot.Module.BlockBot\BlockBot.Module.BlockBot.csproj", "{06338AB4-A15B-46D2-9F8A-F4AC2A7D2CA7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlockBot.Common", "BlockBot.Common\BlockBot.Common.csproj", "{67C68DB9-5DFE-40AB-9363-2258A1666270}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlockBot.Module.Integrations", "BlockBot.Module.Integrations\BlockBot.Module.Integrations.csproj", "{0615CFB0-6056-487A-98E5-0747C3F76950}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlockBot.Common", "BlockBot.Common\BlockBot.Common.csproj", "{67C68DB9-5DFE-40AB-9363-2258A1666270}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,10 +51,6 @@ Global
 		{67C68DB9-5DFE-40AB-9363-2258A1666270}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67C68DB9-5DFE-40AB-9363-2258A1666270}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67C68DB9-5DFE-40AB-9363-2258A1666270}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0615CFB0-6056-487A-98E5-0747C3F76950}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0615CFB0-6056-487A-98E5-0747C3F76950}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0615CFB0-6056-487A-98E5-0747C3F76950}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0615CFB0-6056-487A-98E5-0747C3F76950}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

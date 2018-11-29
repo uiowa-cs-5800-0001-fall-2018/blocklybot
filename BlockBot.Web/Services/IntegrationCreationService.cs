@@ -7,27 +7,32 @@ using Amazon;
 using Amazon.APIGateway.Model;
 using Amazon.S3;
 using BlockBot.Module.Aws.Models;
+using BlockBot.Module.Aws.ServiceInterfaces;
 using BlockBot.Module.Aws.Services;
 using BlockBot.Module.BlockBot.Services;
 using BlockBot.Module.Twilio.Services;
+using BlockBot.Web.Data;
 
-namespace BlockBot.Module.Integrations.Services
+namespace BlockBot.Web.Services
 {
     public class IntegrationCreationService
     {
-        private readonly ApiGatewayService _apiGatewayService;
-        private readonly LambdaService _lambdaService;
-        private readonly S3Service _s3Service;
+        private readonly IApiGatewayService _apiGatewayService;
+        private readonly ILambdaService _lambdaService;
+        private readonly IS3Service _s3Service;
         private readonly BlockBotIntegrationCreationService _blockBotIntegrationCreationService;
         private readonly TwilioIntegrationCreationService _twilioIntegrationCreationService;
+        private ApplicationDbContext _applicationDbContext;
 
         public IntegrationCreationService(
-            ApiGatewayService apiGatewayService,
-            LambdaService lambdaService,
-            S3Service s3Service,
+            ApplicationDbContext applicationDbContext,
+            IApiGatewayService apiGatewayService,
+            ILambdaService lambdaService,
+            IS3Service s3Service,
             BlockBotIntegrationCreationService blockBotIntegrationCreationService,
             TwilioIntegrationCreationService twilioIntegrationCreationService)
         {
+            _applicationDbContext = applicationDbContext;
             _apiGatewayService = apiGatewayService;
             _lambdaService = lambdaService;
             _s3Service = s3Service;
@@ -35,10 +40,10 @@ namespace BlockBot.Module.Integrations.Services
             _twilioIntegrationCreationService = twilioIntegrationCreationService;
         }
 
-        public async Task Integrate(string serviceName, Guid projectId, string iamRole, string restApiId,
+        public async Task Integrate(string serviceName, Guid projectId, RegionEndpoint regionEndpoint, string iamRole, string restApiId,
             string targetBucket, string code)
         {
-            // magic strings
+            // magic strings TODO stick these in app settings
             string sourceBucket = "blockbot-integration-templates";
             string fileName = "index.js";
 
@@ -120,7 +125,7 @@ namespace BlockBot.Module.Integrations.Services
 
                 // TODO replace with region from IConfiguration
                 string newApi =
-                    $"https://{restApiId}.execute-api.{RegionEndpoint.USEast1.SystemName}.amazonaws.com/default/{serviceName}";
+                    $"https://{restApiId}.execute-api.{regionEndpoint.SystemName}.amazonaws.com/default/{serviceName}";
 
                 // TODO log info on integrations in database
 
@@ -134,7 +139,7 @@ namespace BlockBot.Module.Integrations.Services
                 else if (serviceName == TwilioIntegrationCreationService.ServiceName())
                 {
                     // TODO check/perform initialization if necessary
-                    await _twilioIntegrationCreationService.Integrate(newApi);
+                    await _twilioIntegrationCreationService.Integrate(projectId, newApi);
                 }
                 // TODO there is probably a better way to do this / is this extensible to more integrations?
         }

@@ -6,6 +6,7 @@ using BlockBot.Module.SendGrid.Extensions;
 using BlockBot.Module.Twilio.Extensions;
 using BlockBot.Web.Data;
 using BlockBot.Web.Extensions;
+using BlockBot.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -116,6 +117,9 @@ namespace BlockBot.Web
             // register Twilio services
             services.AddTwilioServices();
             services.AddTwilioIntegrationServices();
+
+            // TODO move to extensions
+            services.AddTransient<IntegrationCreationService,IntegrationCreationService>();
 
             // register Identity services
             services.AddUserStore();

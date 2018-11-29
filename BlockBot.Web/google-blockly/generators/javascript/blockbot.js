@@ -45,10 +45,24 @@ Blockly.JavaScript['case'] = function(block) {
     return code;
 };
 
+
+
+
 Blockly.JavaScript['options'] = function(block) {
-    var value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
-    var statements_name = Blockly.JavaScript.statementToCode(block, 'NAME');
+    var value_prompt = Blockly.JavaScript.valueToCode(block, 'Prompt', Blockly.JavaScript.ORDER_ATOMIC);
+    // var statements_options = Blockly.JavaScript.statementToCode(block, 'Options');
     // TODO: Assemble JavaScript into code variable.
+
+    var resultArray = [];
+    var currentBlock = this.getInputTargetBlock('Options');
+    while (currentBlock) {
+        var codeForBlock = Blockly.JavaScript.singleBlockToCode(currentBlock);
+        console.log("Code for block: " + codeForBlock);
+        resultArray.push(codeForBlock);
+        currentBlock = currentBlock.getNextBlock();
+    }
+    // Do stuff with resultArray.
+
     var code = '...;\n';
     return code;
 };
@@ -63,12 +77,15 @@ Blockly.JavaScript['options_alternative'] = function(block) {
 };
 
 Blockly.JavaScript['option'] = function(block) {
-    var value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
-    var statements_name = Blockly.JavaScript.statementToCode(block, 'NAME');
+    var value_option = Blockly.JavaScript.valueToCode(block, 'Option', Blockly.JavaScript.ORDER_ATOMIC);
+    var statements_statements = Blockly.JavaScript.statementToCode(block, 'Statements');
     // TODO: Assemble JavaScript into code variable.
-    var code = '...;\n';
+    var code = '...(Option: ' + value_option + ');\n';
     return code;
 };
+
+
+
 
 Blockly.JavaScript['calendar_create_appt'] = function(block) {
     var value_calendar = Blockly.JavaScript.valueToCode(block, 'CALENDAR', Blockly.JavaScript.ORDER_ATOMIC);

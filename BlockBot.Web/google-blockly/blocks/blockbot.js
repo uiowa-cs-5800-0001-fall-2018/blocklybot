@@ -119,13 +119,12 @@ Blockly.defineBlocksWithJsonArray(
       "args0": [
         {
           "type": "input_value",
-          "name": "NAME",
+          "name": "Prompt",
           "align": "RIGHT"
         },
         {
           "type": "input_statement",
-          "name": "NAME",
-          "check": "options"
+          "name": "Options"
         }
       ],
       "previousStatement": null,
@@ -140,12 +139,12 @@ Blockly.defineBlocksWithJsonArray(
       "args0": [
         {
           "type": "input_value",
-          "name": "NAME",
+          "name": "Option",
           "check": "String"
         },
         {
           "type": "input_statement",
-          "name": "NAME",
+          "name": "Statements",
           "align": "RIGHT"
         }
       ],

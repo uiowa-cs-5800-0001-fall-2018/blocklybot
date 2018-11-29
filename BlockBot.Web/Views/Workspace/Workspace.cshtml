@@ -70,6 +70,7 @@
                 // convert blocks to code and xml
                 Blockly.JavaScript.addReservedWords('code');
                 var code = Blockly.JavaScript.workspaceToCode(workspace);
+                console.log(code);
 
                 var xml = Blockly.Xml.workspaceToDom(workspace);
                 xml.id = "workspaceBlocks";
@@ -78,6 +79,8 @@
             catch(err) {
                 console.log(err.message);
                 document.getElementById("save-message").innerHTML = err.message;
+                document.getElementById("save-spinner").style.display = "none";
+                return;
             }
 
             $.ajax({

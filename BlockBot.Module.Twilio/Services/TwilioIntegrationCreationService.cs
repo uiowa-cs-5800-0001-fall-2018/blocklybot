@@ -8,7 +8,9 @@ using Amazon.APIGateway.Model;
 using Amazon.S3;
 using BlockBot.Common.ServiceInterfaces;
 using BlockBot.Module.Aws.Models;
+using BlockBot.Module.Aws.ServiceInterfaces;
 using BlockBot.Module.Aws.Services;
+using BlockBot.Module.Twilio.ServiceInterfaces;
 
 namespace BlockBot.Module.Twilio.Services
 {
@@ -20,16 +22,16 @@ namespace BlockBot.Module.Twilio.Services
         /// <returns></returns>
         public static string ServiceName() => "twilio";
 
-        private readonly ApiGatewayService _apiGatewayService;
-        private readonly LambdaService _lambdaService;
-        private readonly S3Service _s3Service;
-        private readonly TwilioService _twilioService;
+        private readonly IApiGatewayService _apiGatewayService;
+        private readonly ILambdaService _lambdaService;
+        private readonly IS3Service _s3Service;
+        private readonly ITwilioService _twilioService;
 
         public TwilioIntegrationCreationService(
-            ApiGatewayService apiGatewayService,
-            LambdaService lambdaService,
-            S3Service s3Service,
-            TwilioService twilioService)
+            IApiGatewayService apiGatewayService,
+            ILambdaService lambdaService,
+            IS3Service s3Service,
+            ITwilioService twilioService)
         {
             _apiGatewayService = apiGatewayService;
             _lambdaService = lambdaService;
@@ -37,7 +39,7 @@ namespace BlockBot.Module.Twilio.Services
             _twilioService = twilioService;
         }
 
-        public async Task Integrate(string newApi)
+        public async Task Integrate(Guid projectId, string newApi)
         {
             _twilioService.UpdateServiceProcessingUrl(newApi, "MG2ae64c23b7ba10eb5aecff49998e5ec9");
         }

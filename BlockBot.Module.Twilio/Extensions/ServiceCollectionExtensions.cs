@@ -17,7 +17,7 @@ namespace BlockBot.Module.Twilio.Extensions
 
         public static IServiceCollection AddTwilioIntegrationServices(this IServiceCollection services)
         {
-            services.AddTransient<ITwilioService, TwilioService>();
+            services.AddTransient<TwilioIntegrationCreationService, TwilioIntegrationCreationService>();
             return services;
         }
 

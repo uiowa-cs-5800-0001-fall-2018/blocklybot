@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Amazon;
 using BlockBot.Module.Aws.ServiceInterfaces;
-using BlockBot.Module.Integrations.Services;
 using BlockBot.Module.Twilio.ServiceInterfaces;
 using BlockBot.Web.Data;
+using BlockBot.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -122,6 +123,7 @@ namespace BlockBot.Web.Controllers
                                 .Integrate(
                                     integration.Service.Name,
                                     id,
+                                    RegionEndpoint.USEast1, 
                                     role,
                                     project.RestApiId,
                                     project.S3BucketName(),

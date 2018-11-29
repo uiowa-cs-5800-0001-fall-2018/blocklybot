@@ -33,7 +33,7 @@ namespace BlockBot.Web.Data
 
         public string FunctionName()
         {
-            return ProjectId + "-" + Service.Name;
+            return ProjectId + "-" + Service.Name.ToLowerInvariant();
         }
     }
 }
