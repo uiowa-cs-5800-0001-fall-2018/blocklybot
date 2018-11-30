@@ -34,7 +34,7 @@ namespace BlockBot.Web.Controllers
 
         public IActionResult Contact()
         {
-            ViewData["Message"] = "Your contact page.";
+            ViewData["Message"] = "Got a Question? Contact BOTBUILDER team!";
 
             return View();
         }
