@@ -8,12 +8,16 @@
   <ItemGroup>
     <Compile Remove="closure-library\**" />
     <Compile Remove="google-blockly\**" />
+    <Compile Remove="lambda-templates\**" />
     <Content Remove="closure-library\**" />
     <Content Remove="google-blockly\**" />
+    <Content Remove="lambda-templates\**" />
     <EmbeddedResource Remove="closure-library\**" />
     <EmbeddedResource Remove="google-blockly\**" />
+    <EmbeddedResource Remove="lambda-templates\**" />
     <None Remove="closure-library\**" />
     <None Remove="google-blockly\**" />
+    <None Remove="lambda-templates\**" />
     <Compile Remove="Data\MacContext.cs" />
   </ItemGroup>
 
@@ -113,6 +117,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BlockBot.Module.Aws\BlockBot.Module.Aws.csproj" />
     <ProjectReference Include="..\BlockBot.Module.BlockBot\BlockBot.Module.BlockBot.csproj" />
+    <ProjectReference Include="..\BlockBot.Module.Google\BlockBot.Module.Google.csproj" />
     <ProjectReference Include="..\BlockBot.Module.SendGrid\BlockBot.Module.SendGrid.csproj" />
     <ProjectReference Include="..\BlockBot.Module.Twilio\BlockBot.Module.Twilio.csproj" />
   </ItemGroup>

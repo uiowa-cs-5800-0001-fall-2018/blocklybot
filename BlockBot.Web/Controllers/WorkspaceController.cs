@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Amazon;
 using BlockBot.Module.Aws.ServiceInterfaces;
+using BlockBot.Module.Google.Services;
 using BlockBot.Module.Twilio.ServiceInterfaces;
 using BlockBot.Web.Data;
 using BlockBot.Web.Services;
@@ -18,6 +19,7 @@ namespace BlockBot.Web.Controllers
         private readonly IntegrationCreationService _integrationCreationService;
         private readonly ILogger<WorkspaceController> _logger;
         private readonly ApplicationUserManager _userManager;
+        private readonly GoogleCalendarService _googleCalendarService;
 
         public WorkspaceController(ApplicationDbContext context,
             ApplicationUserManager userManager,
@@ -26,12 +28,14 @@ namespace BlockBot.Web.Controllers
             IS3Service s3Service,
             ITwilioService twilioService,
             IntegrationCreationService integrationCreationService,
-            ILogger<WorkspaceController> logger)
+            ILogger<WorkspaceController> logger,
+            GoogleCalendarService googleCalendarService)
         {
             _context = context;
             _userManager = userManager;
             _integrationCreationService = integrationCreationService;
             _logger = logger;
+            _googleCalendarService = googleCalendarService;
         }
 
         /// <summary>
@@ -60,6 +64,9 @@ namespace BlockBot.Web.Controllers
             {
                 return Unauthorized();
             }
+
+            var x = _googleCalendarService.ListCalendars(user.NormalizedUserName);
+            int y = 0;
 
             return View(project);
         }

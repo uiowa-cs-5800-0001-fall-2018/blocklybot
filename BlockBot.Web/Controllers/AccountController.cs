@@ -101,14 +101,28 @@ namespace BlockBot.Web.Controllers
             }
 
             // Sign in the user with this external login provider if the user already has a login.
+            // TODO look at turning off bypass of 2fa
             SignInResult result =
                 await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false, true);
             if (result.Succeeded)
             {
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name,
                     info.LoginProvider);
+
+                // TODO See about two-factor authentication
+                //var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+                //if (user.TwoFactorEnabled)
+                //{
+                //    return RedirectToAction("LoginWith2fa", "Account", new {returnUrl});
+                //}
+                
                 return LocalRedirect(returnUrl);
             }
+
+            //if (result.RequiresTwoFactor)
+            //{
+            //    return RedirectToAction("LoginWith2fa", "Account", new {returnUrl});
+            //}
 
             if (result.IsLockedOut)
             {
@@ -419,7 +433,7 @@ namespace BlockBot.Web.Controllers
                                          Url.Action("ConfirmEmail", "Account", new {userId = user.Id, code});
 
                     await _emailSender.SendEmailAsync(model.Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        $"Please confirm your BlockBot account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     //await _signInManager.SignInAsync(user, isPersistent: false);
                     TempData["Message"] =

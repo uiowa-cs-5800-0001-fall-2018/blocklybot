@@ -15,7 +15,7 @@ namespace BlockBot.Web
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
-            string configurationPrefix = "FundChat_";
+            string configurationPrefix = "BlockBot_";
 
             IConfigurationRoot ebsConfig = FetchElasticBeanstalkConfiguration(configurationPrefix);
 

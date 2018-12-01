@@ -4,13 +4,15 @@
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }
-<ul class="nav nav-pills nav-stacked">
-    <li class="@AccountManageNavPages.IndexNavClass(ViewContext)"><a asp-controller="AccountManage" asp-action="Index">Profile</a></li>
-    <li class="@AccountManageNavPages.ChangePasswordNavClass(ViewContext)"><a id="change-password" asp-controller="AccountManage" asp-action="ChangePassword">Password</a></li>
+
+<ul class="nav nav-pills flex-column">
+
+    <li class="nav-item"><a asp-controller="AccountManage" asp-action="Index" class="@AccountManageNavPages.IndexNavClass(ViewContext)">Profile</a></li>
+    <li class="nav-item"><a id="change-password" asp-controller="AccountManage" asp-action="ChangePassword" class="@AccountManageNavPages.ChangePasswordNavClass(ViewContext)">Password</a></li>
     @if (hasExternalLogins)
     {
-        <li class="@AccountManageNavPages.ExternalLoginsNavClass(ViewContext)"><a id="external-login" asp-controller="AccountManage" asp-action="ExternalLogins">External logins</a></li>
+        <li class="nav-item"><a id="external-login" asp-controller="AccountManage" asp-action="ExternalLogins" class="@AccountManageNavPages.ExternalLoginsNavClass(ViewContext)">External logins</a></li>
     }
-    <li class="@AccountManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)"><a asp-controller="AccountManage" asp-action="TwoFactorAuthentication">Two-factor authentication</a></li>
-    <li class="@AccountManageNavPages.PersonalDataNavClass(ViewContext)"><a asp-controller="AccountManage" asp-action="PersonalData">Personal data</a></li>
+    <li class="nav-item"><a asp-controller="AccountManage" asp-action="TwoFactorAuthentication" class="@AccountManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)">Two-factor authentication</a></li>
+    <li class="nav-item"><a asp-controller="AccountManage" asp-action="PersonalData" class="@AccountManageNavPages.PersonalDataNavClass(ViewContext)">Personal data</a></li>
 </ul>

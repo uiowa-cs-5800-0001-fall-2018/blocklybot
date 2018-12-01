@@ -1,18 +1,16 @@
 Blockly.JavaScript['start_conversation'] = function(block) {
-    var code = '...;\n'; // TODO log conversation in DynamoDB
+    var code = 'startConversation();\n';
     return code;
 };
 
 Blockly.JavaScript['end_conversation'] = function(block) {
-    var code = '...;\n'; // TODO log end of conversation in DynamoDB
+    var code = 'endConversation();\n'; // TODO log end of conversation in DynamoDB
     return code;
 };
 
 Blockly.JavaScript['send_message'] = function(block) {
-    var value_message_text = Blockly.JavaScript.valueToCode(block, 'message_text', Blockly.JavaScript.ORDER_ATOMIC);
-    // TODO: Assemble JavaScript into code variable.
-    var code = 'response_message += \'<Message>' + value_message_text.slice(1, value_message_text.length - 1) + '</Message>\'\n';
-    return code;
+    var message_text = Blockly.JavaScript.valueToCode(block, 'message_text', Blockly.JavaScript.ORDER_ATOMIC);
+    return "addMessage(" + message_text + ");\n";
 };
 
 
@@ -50,20 +48,57 @@ Blockly.JavaScript['case'] = function(block) {
 
 Blockly.JavaScript['options'] = function(block) {
     var value_prompt = Blockly.JavaScript.valueToCode(block, 'Prompt', Blockly.JavaScript.ORDER_ATOMIC);
-    // var statements_options = Blockly.JavaScript.statementToCode(block, 'Options');
-    // TODO: Assemble JavaScript into code variable.
+    value_prompt = value_prompt.slice(1, value_prompt.length - 1); // remove quotes
 
-    var resultArray = [];
+    var codeArray = [];
+    var optionArray = [];
     var currentBlock = this.getInputTargetBlock('Options');
     while (currentBlock) {
         var codeForBlock = Blockly.JavaScript.singleBlockToCode(currentBlock);
-        console.log("Code for block: " + codeForBlock);
-        resultArray.push(codeForBlock);
+        codeArray.push(codeForBlock);
+        var optionForBlock = Blockly.JavaScript.valueToCode(currentBlock, 'Option', Blockly.JavaScript.ORDER_ATOMIC);
+        optionArray.push(optionForBlock);
         currentBlock = currentBlock.getNextBlock();
     }
-    // Do stuff with resultArray.
 
-    var code = '...;\n';
+    var code_string = "";
+    var option_string = "";
+    var regex = /case-idx/g;
+    for (let i = 0; i < codeArray.length; i++) {
+        code_string += codeArray[i].replace(regex, (i + 1).toString());
+        option_string += "%0a" + (i + 1).toString() + " - " + optionArray[i].slice(1, optionArray[i].length - 1);
+    }
+
+    var code1 = "optionPrompt = \"TODO-option-prompt\";\n" +
+        "    if (isOptionSelected(optionPrompt) === false) {\n" +
+        "        // present options\n" +
+        "        addMessage('Hair Design, Inc. Choose a number.%0a1 - appt with Nicole%0a2 - appt with Michelle%0a3 - see stores hours');\n" +
+        "        sendMessage();\n" +
+        "    } else {\n" +
+        "        // todo strip body\n" +
+        "        switch (twilio_request.Body) {\n" +
+
+        "            default:\n" +
+        "                addMessage('Unable to interpret response. Please select one of the provided options.');\n" +
+        "                sendMessage();\n" +
+        "                break;\n" +
+        "        }\n" +
+        "    }"
+
+    var code = "optionPrompt = " + value_prompt + ";\n" +
+        "if (isOptionSelected(optionPrompt) === false) {\n" +
+        "    addMessage('" + value_prompt + option_string + "');\n" +
+        "    sendMessage();\n" +
+        "} else {\n" +
+        "    switch (twilio_request.Body.replace(/\\D/g,'')) {\n" +
+        code_string +
+        "        default:\n" +
+        "            addMessage('Unable to interpret response. Please select one of the provided options.');\n" +
+        "            sendMessage();\n" +
+        "            break;\n" +
+        "    }\n" +
+        "}"
+
     return code;
 };
 
@@ -80,7 +115,7 @@ Blockly.JavaScript['option'] = function(block) {
     var value_option = Blockly.JavaScript.valueToCode(block, 'Option', Blockly.JavaScript.ORDER_ATOMIC);
     var statements_statements = Blockly.JavaScript.statementToCode(block, 'Statements');
     // TODO: Assemble JavaScript into code variable.
-    var code = '...(Option: ' + value_option + ');\n';
+    var code = "case \"case-idx\":\nsetOptionSelected(optionPrompt, \"case-idx\");\n" + statements_statements + "break;\n"
     return code;
 };
 
