@@ -18,7 +18,6 @@
     <None Remove="closure-library\**" />
     <None Remove="google-blockly\**" />
     <None Remove="lambda-templates\**" />
-    <Compile Remove="Data\MacContext.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -106,6 +105,9 @@
     <Content Update="Views\Dashboard\Dashboard.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Docs\CreateTwilioAccount.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Docs\Index.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
@@ -118,6 +120,7 @@
     <ProjectReference Include="..\BlockBot.Module.Aws\BlockBot.Module.Aws.csproj" />
     <ProjectReference Include="..\BlockBot.Module.BlockBot\BlockBot.Module.BlockBot.csproj" />
     <ProjectReference Include="..\BlockBot.Module.Google\BlockBot.Module.Google.csproj" />
+    <ProjectReference Include="..\BlockBot.module.Integrations\BlockBot.module.Integrations.csproj" />
     <ProjectReference Include="..\BlockBot.Module.SendGrid\BlockBot.Module.SendGrid.csproj" />
     <ProjectReference Include="..\BlockBot.Module.Twilio\BlockBot.Module.Twilio.csproj" />
   </ItemGroup>

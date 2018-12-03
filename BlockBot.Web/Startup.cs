@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using BlockBot.Common.Data;
+using BlockBot.Common.Extensions;
 using BlockBot.Module.Aws.Extensions;
 using BlockBot.Module.BlockBot.Extensions;
 using BlockBot.Module.Google.Extensions;
 using BlockBot.Module.SendGrid.Extensions;
 using BlockBot.Module.Twilio.Extensions;
-using BlockBot.Web.Data;
-using BlockBot.Web.Extensions;
-using BlockBot.Web.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -19,6 +22,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using BlockBot.module.Integrations.Extensions;
 
 namespace BlockBot.Web
 {
@@ -38,7 +42,7 @@ namespace BlockBot.Web
         {
             services.Configure<ForwardedHeadersOptions>(options =>
             {
-                options.ForwardedHeaders = 
+                options.ForwardedHeaders =
                     ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
 
@@ -48,21 +52,6 @@ namespace BlockBot.Web
                 //{
                 //    options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
                 //    options.HttpsPort = 44305;
-                //});
-            }
-            else
-            {
-                //services.AddHsts(options =>
-                //{
-                //    options.Preload = true;
-                //    options.IncludeSubDomains = true;
-                //    options.MaxAge = TimeSpan.FromDays(1); // TODO gradually increase
-                //});
-
-                //services.AddHttpsRedirection(options =>
-                //{
-                //    //options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
-                //    options.HttpsPort = 443;
                 //});
             }
 
@@ -80,20 +69,20 @@ namespace BlockBot.Web
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options
                         .UseLazyLoadingProxies()
-                        .UseSqlite(Configuration.GetConnectionString("MacConnection")));
+                        .UseSqlite(Configuration.GetConnectionString("MacConnection"),
+                            builder => builder.MigrationsAssembly(typeof(Startup).Assembly.FullName)));
             }
             else
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options
                         .UseLazyLoadingProxies()
-                        .UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                        .UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+                            builder => builder.MigrationsAssembly(typeof(Startup).Assembly.FullName))
+                );
             }
 
-            services.AddIdentity<ApplicationUser, ApplicationRole>(o =>
-                {
-                    o.SignIn.RequireConfirmedEmail = true;
-                })
+            services.AddIdentity<ApplicationUser, ApplicationRole>(o => { o.SignIn.RequireConfirmedEmail = true; })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -135,6 +124,23 @@ namespace BlockBot.Web
             {
                 googleOptions.ClientId = Configuration.GetGoogleClientId();
                 googleOptions.ClientSecret = Configuration.GetGoogleClientSecret();
+                googleOptions.Scope.Add("https://www.googleapis.com/auth/userinfo.profile");
+                googleOptions.Scope.Add("https://www.googleapis.com/auth/calendar.readonly");
+                googleOptions.Scope.Add("https://www.googleapis.com/auth/calendar.events");
+                googleOptions.SaveTokens = true;
+                googleOptions.AccessType = "offline";
+                googleOptions.Events.OnCreatingTicket = ctx =>
+                {
+                    List<AuthenticationToken> tokens = ctx.Properties.GetTokens()
+                        as List<AuthenticationToken>;
+                    tokens.Add(new AuthenticationToken
+                    {
+                        Name = "TicketCreated",
+                        Value = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)
+                    });
+                    ctx.Properties.StoreTokens(tokens);
+                    return Task.CompletedTask;
+                };
             });
 
             //
@@ -155,6 +161,9 @@ namespace BlockBot.Web
             // register Google services
             services.AddGoogleServices();
 
+            // register Integrations services
+            services.AddIntegrationsServices();
+
             // register SendGrid services
             services.AddSendGridServices();
 
@@ -162,8 +171,6 @@ namespace BlockBot.Web
             services.AddTwilioServices();
             services.AddTwilioIntegrationServices();
 
-            // TODO move to extensions
-            services.AddTransient<IntegrationCreationService,IntegrationCreationService>();
 
             // register Identity services
             services.AddUserStore();

@@ -160,19 +160,19 @@ Blockly.defineBlocksWithJsonArray(
       "args0": [
         {
           "type": "input_value",
-          "name": "NAME",
+          "name": "Prompt",
           "check": "String",
           "align": "RIGHT"
         },
         {
           "type": "input_statement",
-          "name": "options",
+          "name": "Options",
           "check": "option",
           "align": "RIGHT"
         },
         {
           "type": "input_statement",
-          "name": "alternative",
+          "name": "Alternative",
           "align": "RIGHT"
         }
       ],
@@ -216,26 +216,10 @@ Blockly.defineBlocksWithJsonArray(
           "align": "RIGHT"
         },
         {
-          "type": "field_dropdown",
-          "name": "Duration",
-          "options": [
-            [
-              "1 hour",
-              "OPTIONNAME"
-            ],
-            [
-              "2 hours",
-              "OPTIONNAME"
-            ],
-            [
-              "3 hours",
-              "OPTIONNAME"
-            ],
-            [
-              "4 hours",
-              "OPTIONNAME"
-            ]
-          ]
+          "type": "input_value",
+          "name": "DURATION",
+          "check": "Number",
+          "align": "RIGHT"
         }
       ],
       "inputsInline": false,
@@ -247,21 +231,17 @@ Blockly.defineBlocksWithJsonArray(
     },
     {
       "type": "calendar_calendar",
-      "message0": "Calendar %1",
+      "message0": "Calendar %1 (id %2)",
       "args0": [
         {
-          "type": "field_dropdown",
+          "type": "field_input",
           "name": "NAME",
-          "options": [
-            [
-              "Michelle",
-              "MICHELLE"
-            ],
-            [
-              "Nicole",
-              "NICOLE"
-            ]
-          ]
+          "text": "default"
+        },
+        {
+          "type": "field_input",
+          "name": "ID",
+          "text": "default",
         }
       ],
       "output": "calendar",

@@ -12,5 +12,10 @@ namespace BlockBot.Web.Controllers
         {
             return View();
         }
+
+        public IActionResult CreateTwilioAccount()
+        {
+            return View();
+        }
     }
 }

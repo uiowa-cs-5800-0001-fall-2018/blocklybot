@@ -1,4 +1,4 @@
-﻿@model BlockBot.Web.Data.Project
+﻿@model BlockBot.Web.Models.WorkspaceModel
 @{
     ViewData["Title"] = "Workspace";
 }
@@ -14,10 +14,10 @@
     <div id="blocklyDiv" style="height: 64vh; width: auto;"></div>
 </div>
 
-<partial name="_ToolboxPartial"/>
+<partial name="_ToolboxPartial" model="@Model.CalendarList"/>
 
 <div style="display: none;">
-    @Html.Raw(Model.XML)
+    @Html.Raw(Model.Project.XML)
 </div>
 
 @section Scripts{
@@ -83,35 +83,35 @@
                 return;
             }
 
-            $.ajax({
-                url: '@Url.Action("PutProjectXml", "Workspace", new {id = Model.Id})',
-                data: {
-                    "xml": xml_text
-                },
-                method: 'PUT',
-                success: function() {
-                    $.ajax({
-                        url: '@Url.Action("PutProjectCode", "Workspace", new {id = Model.Id})',
-                        data: {
-                            "code": code
-                        },
-                        method: 'PUT',
-                        success: function() {
-                            document.getElementById("save-spinner").style.display = "none";
-                        },
-                        error: function (jqXHR, textStatus, errorThrown) {
-                            document.getElementById("save-spinner").style.display = "none";
-                            console.log(errorThrown);
-                            document.getElementById("save-message").innerHTML = errorThrown;
-                        }
-                    });
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    document.getElementById("save-spinner").style.display = "none";
-                    console.log(errorThrown);
-                    document.getElementById("save-message").innerHTML = errorThrown;
-                }
-            });
+//            $.ajax({
+//                url: '@Url.Action("PutProjectXml", "Workspace", new {id = Model.Project.Id})',
+//                data: {
+//                    "xml": xml_text
+//                },
+//                method: 'PUT',
+//                success: function() {
+//                    $.ajax({
+//                        url: '@Url.Action("PutProjectCode", "Workspace", new {id = Model.Project.Id})',
+//                        data: {
+//                            "code": code
+//                        },
+//                        method: 'PUT',
+//                        success: function() {
+//                            document.getElementById("save-spinner").style.display = "none";
+//                        },
+//                        error: function (jqXHR, textStatus, errorThrown) {
+//                            document.getElementById("save-spinner").style.display = "none";
+//                            console.log(errorThrown);
+//                            document.getElementById("save-message").innerHTML = errorThrown;
+//                        }
+//                    });
+//                },
+//                error: function (jqXHR, textStatus, errorThrown) {
+//                    document.getElementById("save-spinner").style.display = "none";
+//                    console.log(errorThrown);
+//                    document.getElementById("save-message").innerHTML = errorThrown;
+//                }
+//            });
 
             
 

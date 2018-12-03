@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using BlockBot.Module.Google.Services;
-using BlockBot.Web.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -26,7 +25,8 @@ namespace BlockBot.Tests.Google
         [TestMethod]
         public void ListCalendar_ShouldHaveAtLeastPersonalCalendar()
         {
-            _service.ListCalendars("HARLEY@WALDSTEIN.IO");
+
+            //_service.ListCalendars("HARLEY@WALDSTEIN.IO");
         }
     }
 }

@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BlockBot.Common.Data;
 using BlockBot.Module.Google.Services;
-using BlockBot.Web.Data;
 using Google.Apis.Calendar.v3;
 using Google.Apis.Calendar.v3.Data;
 using Microsoft.AspNetCore.Mvc;
+using SQLitePCL;
 
 namespace BlockBot.Web.Controllers
 {
@@ -14,11 +15,13 @@ namespace BlockBot.Web.Controllers
     {
         private readonly GoogleCalendarService _googleCalendarService;
         private readonly ApplicationUserManager _userManager;
+        private ApplicationDbContext _context;
 
-        public CalendarController(GoogleCalendarService googleCalendarService, ApplicationUserManager userManager)
+        public CalendarController(GoogleCalendarService googleCalendarService, ApplicationUserManager userManager, ApplicationDbContext context)
         {
             this._googleCalendarService = googleCalendarService;
             this._userManager = userManager;
+            _context = context;
         }
         public async Task<IActionResult> Index()
         {
@@ -28,10 +31,9 @@ namespace BlockBot.Web.Controllers
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            CalendarListResource.ListRequest x = _googleCalendarService.ListCalendars(user.NormalizedUserName);
-            CalendarList z = x.Execute();
+            var x = _googleCalendarService.ListCalendars(ref _context, user.NormalizedUserName);
             int y = 0;
-            return View(z);
+            return View(x);
         }
     }
 }

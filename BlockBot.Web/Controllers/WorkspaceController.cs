@@ -2,11 +2,13 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Amazon;
+using BlockBot.Common.Data;
+using BlockBot.module.Integrations.Services;
 using BlockBot.Module.Aws.ServiceInterfaces;
 using BlockBot.Module.Google.Services;
 using BlockBot.Module.Twilio.ServiceInterfaces;
-using BlockBot.Web.Data;
-using BlockBot.Web.Services;
+using BlockBot.Web.Models;
+using Google.Apis.Calendar.v3.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -15,11 +17,11 @@ namespace BlockBot.Web.Controllers
 {
     public class WorkspaceController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly GoogleCalendarService _googleCalendarService;
         private readonly IntegrationCreationService _integrationCreationService;
         private readonly ILogger<WorkspaceController> _logger;
         private readonly ApplicationUserManager _userManager;
-        private readonly GoogleCalendarService _googleCalendarService;
+        private ApplicationDbContext _context;
 
         public WorkspaceController(ApplicationDbContext context,
             ApplicationUserManager userManager,
@@ -65,10 +67,23 @@ namespace BlockBot.Web.Controllers
                 return Unauthorized();
             }
 
-            var x = _googleCalendarService.ListCalendars(user.NormalizedUserName);
-            int y = 0;
+            var model = new WorkspaceModel
+            {
+                Project = project
+            };
+            ApplicationUserClaim claim = user.Claims.FirstOrDefault(x => x.ClaimType == "GoogleRefreshToken");
+            if (claim != null)
+            {
+                // TODO change this to load db context some other way eventually
+                model.CalendarList = _googleCalendarService
+                    .ListCalendars(ref _context, user.NormalizedUserName)
+                    .Items
+                    .Where(x => x.AccessRole == "writer" || x.AccessRole == "owner")
+                    .ToList();
+            }
 
-            return View(project);
+
+            return View(model);
         }
 
         [HttpPut]
@@ -130,7 +145,7 @@ namespace BlockBot.Web.Controllers
                                 .Integrate(
                                     integration.Service.Name,
                                     id,
-                                    RegionEndpoint.USEast1, 
+                                    RegionEndpoint.USEast1,
                                     role,
                                     project.RestApiId,
                                     project.S3BucketName(),

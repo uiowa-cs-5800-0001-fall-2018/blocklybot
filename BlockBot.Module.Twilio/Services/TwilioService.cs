@@ -4,7 +4,9 @@ using BlockBot.Module.Twilio.ServiceInterfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Twilio;
+using Twilio.Rest.Lookups.V1;
 using Twilio.Rest.Messaging.V1;
+using PhoneNumberResource = Twilio.Rest.Messaging.V1.Service.PhoneNumberResource;
 
 namespace BlockBot.Module.Twilio.Services
 {
@@ -30,7 +32,8 @@ namespace BlockBot.Module.Twilio.Services
                 ServiceResource.Update(new UpdateServiceOptions(serviceSid)
                 {
                     FriendlyName = "Appointment Messaging Service",
-                    InboundRequestUrl = new Uri(url)
+                    InboundRequestUrl = new Uri(url),
+                    
                 });
             }
             catch (Exception e)

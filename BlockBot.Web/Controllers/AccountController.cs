@@ -3,7 +3,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using BlockBot.Web.Data;
+using BlockBot.Common.Data;
 using BlockBot.Web.Models.Account;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -106,16 +106,18 @@ namespace BlockBot.Web.Controllers
                 await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false, true);
             if (result.Succeeded)
             {
+                // Store the access token and resign in so the token is included in
+                // in the cookie
+                ApplicationUser user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+
+                AuthenticationProperties props = new AuthenticationProperties();
+                props.StoreTokens(info.AuthenticationTokens);
+
+                await _signInManager.SignInAsync(user, props, info.LoginProvider);
+
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name,
                     info.LoginProvider);
 
-                // TODO See about two-factor authentication
-                //var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
-                //if (user.TwoFactorEnabled)
-                //{
-                //    return RedirectToAction("LoginWith2fa", "Account", new {returnUrl});
-                //}
-                
                 return LocalRedirect(returnUrl);
             }
 
@@ -165,7 +167,17 @@ namespace BlockBot.Web.Controllers
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
-                        await _signInManager.SignInAsync(user, false);
+                        // Include the access token in the properties
+                        var props = new AuthenticationProperties();
+                        props.StoreTokens(info.AuthenticationTokens);
+
+                        var refreshTokenClaim = info.AuthenticationTokens.FirstOrDefault(x => x.Name == "refresh_token");
+                        if (refreshTokenClaim != null)
+                        {
+                            await _userManager.AddClaimAsync(user, new Claim(info.LoginProvider + "RefreshToken", refreshTokenClaim.Value, ClaimValueTypes.String, info.LoginProvider));
+                        }
+
+                        await _signInManager.SignInAsync(user, props, info.LoginProvider);
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
                         return LocalRedirect(returnUrl);
                     }

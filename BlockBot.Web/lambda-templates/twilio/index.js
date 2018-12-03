@@ -1,18 +1,33 @@
 'use strict';
-
 const PresentOptions = require('./PresentOptions');
+const Calendar = require('./Calendar');
+
+const {google} = require('googleapis');
+
+var request = require('request');
+
+const scopes = [
+    'https://www.googleapis.com/auth/userinfo.profile',
+    'https://www.googleapis.com/auth/calendar.readonly',
+    'https://www.googleapis.com/auth/calendar.events'
+];
 
 module.exports.handler = (event, context, callback) => {
-    const twilio_request = {}
-    const body_array = event.body.split('&')
-    for (var i = 0; i < body_array.length; i++){
-        var x = body_array[i].split('=')
-        twilio_request[x[0]] = x.length > 1 ? decodeURIComponent(x[1]) : null
-    }
-    console.log(twilio_request)
+    // const twilio_request = {}
+    // const body_array = event.body.split('&')
+    // for (var i = 0; i < body_array.length; i++){
+    //     var x = body_array[i].split('=')
+    //     twilio_request[x[0]] = x.length > 1 ? decodeURIComponent(x[1]) : null
+    // }
+    // console.log(twilio_request)
 
     // TODO look up API key by account sid
-    const TWILIO_API_KEY="667b624751c4fd22e9a5c5b1bd2b76fe"
+    const TWILIO_API_KEY = "667b624751c4fd22e9a5c5b1bd2b76fe";
+    const GOOGLE_CLIENT_ID = "1064809067576-ik4i954ifh322bk4v2a61fc2o80cpq7d.apps.googleusercontent.com";
+    const GOOGLE_CLIENT_SECRET = "YiMhs7jy0UjXOVUH47KErMPFE";
+    const GOOGLE_REFRESH_TOKEN = "1/IqU7hZon1hI_cZRv6fCiDG6qjIoDLQglFF8pmmIjT7g";
+    const BLOCKBOT_NORMALIZED_USERNAME = "HARLEY@WALDSTEIN.IO";
+    const BLOCKBOT_PROJECT_ID = "";
 
     var response_message = `<?xml version="1.0" encoding="UTF-8" ?><Response>`
 
@@ -20,22 +35,24 @@ module.exports.handler = (event, context, callback) => {
     //
     // Message functions
     //
-    function addMessage(messageText){
+    function addMessage(messageText) {
         response_message += "<Message>" + messageText + "</Message>";
     }
 
-    function getMessageBody(){
+    function getMessageBody() {
+        // twilio_request.Body
         // TODO return text of message
     }
 
-    function getMessageSender(){
+    function getMessageSender() {
+        // twilio_request.From
         // TODO return sender of message
     }
 
     //
     // Control flow helper functions
     //
-    function startConversation(){
+    function startConversation() {
         var phoneNumber = getMessageSender();
         // TODO check if open conversation exists in dynamodb
         // TODO if not, register new conversation
@@ -59,23 +76,22 @@ module.exports.handler = (event, context, callback) => {
     }
 
 
-
     //
     // Option helper functions: Unseen -> Pending -> Selected
     //
-    function isOptionSelectionUnseen(optionPrompt){
+    function isOptionSelectionUnseen(optionPrompt) {
 
     }
 
-    function isOptionSelectionPending(optionPrompt){
+    function isOptionSelectionPending(optionPrompt) {
 
     }
 
-    function setOptionSelectionPending(optionPrompt){
+    function setOptionSelectionPending(optionPrompt) {
 
     }
 
-    function isOptionSelectionSelected(optionPrompt){
+    function isOptionSelectionSelected(optionPrompt) {
         // TODO return true if option is selected, otherwise false
     }
 
@@ -94,7 +110,7 @@ module.exports.handler = (event, context, callback) => {
         // TODO check to see if value is set in DynamoDb
         var stylistSet = false;
 
-        if (stylistSet === false){
+        if (stylistSet === false) {
             // TODO set variable in DynamoDb
         }
     }
@@ -106,10 +122,32 @@ module.exports.handler = (event, context, callback) => {
     //
     // Calendar helper functions
     //
-    function getCalendarLink(calendarName){
-        // TODO fetch calendar link/key based on calendar name
+    function getCalendarName(calendar) {
+        return calendar.name;
     }
 
+    function createCalendarEvent(calendar, title, startTime, durationInMinutes) {
+        request.post({
+            url: 'https://localhost:44305/GoogleProxy/CreateCalendarEvent',
+            form:
+                {
+                    username: BLOCKBOT_NORMALIZED_USERNAME,
+                    calendarId: calendar,
+                    title: title,
+                    startYear: startTime.getFullYear(),
+                    startMonth: startTime.getMonth() + 1,
+                    startDay: startTime.getDate(),
+                    startHour: startTime.getHours(),
+                    startMinute: startTime.getMinutes(),
+                    durationInMinutes: durationInMinutes
+                },
+            rejectUnauthorized: false
+        });
+    }
+
+
+    createCalendarEvent("harley@waldstein.io", "test 2", new Date(2018, 11, 3, 11, 0, 0, 0), 30);
+    return;
 
     //
     // Helper variables
@@ -126,23 +164,15 @@ module.exports.handler = (event, context, callback) => {
     // message initially received, present options
 
     optionPrompt = "Hair Design, Inc. Choose a number.";
-    var opt = new PresentOptions(optionPrompt);
-
     if (isOptionSelectionUnseen(optionPrompt)) {
         setOptionSelectionPending(optionPrompt);
         addMessage('Hair Design, Inc. Choose a number.%0a1 - appt with Nicole%0a2 - appt with Michelle%0a3 - see stores hours');
         sendMessage();
     } else {
-        var switchValue;
-        if (isOptionSelectionPending(optionPrompt)) {
-            switchValue = getMessageBody().replace(/\D/g,'');
-        } else {
-            switchValue = getOptionSelected(optionPrompt);
-        }
         // TODO explore if this will allow nested "present option" blocks
-        if (isOptionSelectionPending(optionPrompt)){
+        if (isOptionSelectionPending(optionPrompt)) {
 
-            switch (switchValue) {
+            switch (getMessageBody().replace(/\D/g, '')) {
                 case "case-idx":
                     setOptionSelectionSelected(optionPrompt, "case-idx");
 
@@ -174,17 +204,12 @@ module.exports.handler = (event, context, callback) => {
                     break;
             }
         }
+
     }
 
-
-
-
-
-
-
-
-    // END_CODE_PLACEHOLDER
-    response_message += '</Response>'
+    var c = new Calendar("", "");
+    c.// END_CODE_PLACEHOLDER
+        response_message += '</Response>'
 
     callback(null, {
         statusCode: 200,
