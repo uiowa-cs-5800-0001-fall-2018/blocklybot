@@ -25,8 +25,8 @@ module.exports.handler = (event, context, callback) => {
     // Constants
     const BLOCKBOT_NORMALIZED_USERNAME = "##NORMALIZED_USERNAME##"; // "HARLEY@WALDSTEIN.IO";
     const BLOCKBOT_PROJECT_ID = "##PROJECT_ID##"; //"93800126-dd9b-407f-9d17-852144ba542c";
-    const AWS_ACCESS_KEY = "AKIAIXKEQYRQWLKZSQDA";
-    const AWS_ACCESS_SECRET = "eVBMj9eJuUyaHwvwPzv7YRtT9PSNZoxaXWQ82baU";
+    const AWS_ACCESS_KEY = "REDACTED";
+    const AWS_ACCESS_SECRET = "REDACTED";
 
     // configure DynamoDB client
     AWS.config.update({
