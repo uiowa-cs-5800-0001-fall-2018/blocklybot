@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -78,10 +79,46 @@ namespace BlockBot.Module.Google.Services
             InitializeIfNecessary(ref _context,username);
             return _service.CalendarList.List().ExecuteAsync().Result;
         }
+
         public Event CreateEvent(ref ApplicationDbContext _context, string username, string calendarId, Event eventObject)
         {
             InitializeIfNecessary(ref _context, username);
             return _service.Events.Insert(eventObject, calendarId).Execute();
+        }
+
+        public IList<Event> GetNextNEvents(ref ApplicationDbContext _context, string username, string calendarId, DateTime now, int n)
+        {
+            InitializeIfNecessary(ref _context, username);
+            var x = _service.Events.List(calendarId);
+            x.TimeMin = now;
+            x.MaxResults = n;
+            return x.Execute().Items;
+        }
+
+        public DateTime GetNextNAvailableCalendarEventSlots(ref ApplicationDbContext _context, string username, string calendarId, DateTime now, int n, int durationInMinutes)
+        {
+            InitializeIfNecessary(ref _context, username);
+            var listRequest = _service.Events.List(calendarId);
+            listRequest.TimeMin = now;
+            var events = listRequest.Execute().Items;
+            var list = events.OrderBy(x => x.Start.DateTime).ToList();
+            if (list.Count == 0)
+            {
+                return now;
+            }
+            if (list[0].Start.DateTime > now.AddMinutes(durationInMinutes))
+            {
+                return now;
+            }
+            for (int i = 1; i < list.Count; i++)
+            {
+                if (list[i].Start.DateTime > list[i-1].End.DateTime.Value.AddMinutes(durationInMinutes))
+                {
+                    return list[i - 1].End.DateTime.Value;
+                }
+            }
+
+            return list[list.Count - 1].End.DateTime.Value;
         }
 
     }

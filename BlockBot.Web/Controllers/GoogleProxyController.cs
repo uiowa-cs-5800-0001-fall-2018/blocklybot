@@ -11,7 +11,7 @@ namespace BlockBot.Web.Controllers
     public class GoogleProxyController : Controller
     {
         private ApplicationDbContext _context;
-        private GoogleCalendarService _googleCalendarService;
+        private readonly GoogleCalendarService _googleCalendarService;
 
         public GoogleProxyController(
             ApplicationDbContext context,
@@ -23,9 +23,10 @@ namespace BlockBot.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult CreateCalendarEvent(string username, string calendarId, string title, int startYear, int startMonth, int startDay, int startHour, int startMinute, int durationInMinutes)
+        public JsonResult CreateCalendarEvent(string username, string calendarId, string title, int startYear,
+            int startMonth, int startDay, int startHour, int startMinute, int durationInMinutes)
         {
-            var startTime = new DateTime(startYear, startMonth, startDay, startHour, startMinute, 0);
+            DateTime startTime = new DateTime(startYear, startMonth, startDay, startHour, startMinute, 0);
             return new JsonResult(_googleCalendarService
                 .CreateEvent(ref _context,
                     username,
@@ -42,6 +43,24 @@ namespace BlockBot.Web.Controllers
                             DateTime = startTime.AddMinutes(durationInMinutes)
                         }
                     }));
+        }
+
+        [HttpPost]
+        public JsonResult GetNextNCalendarEvents(string username, string calendarId, int startYear, int startMonth,
+            int startDay, int startHour, int startMinute, int n)
+        {
+            DateTime startTime = new DateTime(startYear, startMonth, startDay, startHour, startMinute, 0);
+            return new JsonResult(_googleCalendarService
+                .GetNextNEvents(ref _context, username, calendarId, startTime, n));
+        }
+
+        [HttpPost]
+        public JsonResult GetNextNAvailableCalendarEventSlots(string username, string calendarId, int startYear, int startMonth,
+            int startDay, int startHour, int startMinute, int n, int durationInMinutes)
+        {
+            DateTime startTime = new DateTime(startYear, startMonth, startDay, startHour, startMinute, 0);
+            return new JsonResult(_googleCalendarService
+                .GetNextNAvailableCalendarEventSlots(ref _context, username, calendarId, startTime, n, durationInMinutes));
         }
     }
 }

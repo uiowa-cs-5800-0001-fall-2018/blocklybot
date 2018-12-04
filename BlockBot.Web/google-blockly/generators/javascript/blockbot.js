@@ -64,12 +64,9 @@ Blockly.JavaScript['options'] = function(block) {
     var option_string = "";
     var regex = /case-idx/g;
     for (let i = 0; i < codeArray.length; i++) {
-        console.log("code string: " + code_string);
-        console.log("code arrau: " + codeArray[i]);
         code_string += codeArray[i].replace(regex, (i + 1).toString());
-        option_string += "%0a" + (i + 1).toString() + " - " + optionArray[i].slice(1, optionArray[i].length - 1);
+        option_string += "\n" + (i + 1).toString() + " - " + optionArray[i].slice(1, optionArray[i].length - 1);
     }
-    console.log("code string final: " + code_string);
 
     return "    optionPrompt = " + value_prompt +";\n" +
         "    if (isOptionSelectionUnseen(optionPrompt)) {\n" +
@@ -162,20 +159,20 @@ Blockly.JavaScript['calendar_calendar'] = function(block) {
 };
 
 Blockly.JavaScript['calendar_next_available'] = function(block) {
-    var dropdown_times = block.getFieldValue('TIMES');
+    var value_duration = Blockly.JavaScript.valueToCode(block, 'DURATION', Blockly.JavaScript.ORDER_ATOMIC);
     var value_calendar = Blockly.JavaScript.valueToCode(block, 'CALENDAR', Blockly.JavaScript.ORDER_ATOMIC);
     // TODO: Assemble JavaScript into code variable.
-    var code = '...';
+    var code = 'getNextAvailableCalendarEvent(' + value_calendar + ', ' + value_duration + ')';
     // TODO: Change ORDER_NONE to the correct strength.
     return [code, Blockly.JavaScript.ORDER_NONE];
 };
 
-Blockly.JavaScript['datetime'] = function(block) {
-    // TODO: Assemble JavaScript into code variable.
-    var code = '...';
-    // TODO: Change ORDER_NONE to the correct strength.
-    return [code, Blockly.JavaScript.ORDER_NONE];
-};
+// Blockly.JavaScript['datetime'] = function(block) {
+//     // TODO: Assemble JavaScript into code variable.
+//     var code = '...';
+//     // TODO: Change ORDER_NONE to the correct strength.
+//     return [code, Blockly.JavaScript.ORDER_NONE];
+// };
 
 Blockly.JavaScript['calendar_get_name'] = function(block) {
     var value_calendar = Blockly.JavaScript.valueToCode(block, 'CALENDAR', Blockly.JavaScript.ORDER_ATOMIC);

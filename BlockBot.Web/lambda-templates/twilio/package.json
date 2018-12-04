@@ -10,7 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "googleapis": "35.0.0",
-    "request": "2.88.0"
+    "request": "2.88.0",
+    "deasync": "0.1.14",
+    "aws-sdk": "2.368.0"
   }
 }

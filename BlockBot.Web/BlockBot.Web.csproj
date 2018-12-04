@@ -111,6 +111,12 @@
     <Content Update="Views\Docs\Index.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Projects\Clone.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\User\Projects.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Workspace\Workspace.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

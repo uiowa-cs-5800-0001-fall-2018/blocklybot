@@ -41,6 +41,18 @@ namespace BlockBot.Common.Data
         [Required]
         public string Description { get; set; }
 
+        [Required]
+        [Display(Name = "Twilio Messaging Service SID")]
+        public string TwilioServiceSID { get; set; }
+
+        [Required]
+        [Display(Name = "Twilio Account SID")]
+        public string TwilioAccountSID { get; set; }
+
+        [Required]
+        [Display(Name = "Twilio Auth Token")]
+        public string TwilioAuthToken { get; set; }
+
         public string S3BucketName()
         {
             return "blockbot-" + Id;

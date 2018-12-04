@@ -42,6 +42,8 @@ namespace BlockBot.module.Integrations.Services
         public async Task Integrate(string serviceName, Guid projectId, RegionEndpoint regionEndpoint, string iamRole, string restApiId,
             string targetBucket, string code)
         {
+            var p = _applicationDbContext.Projects.Find(projectId);
+
             // magic strings TODO stick these in app settings
             string sourceBucket = "blockbot-integration-templates";
             string fileName = "index.js";
@@ -68,10 +70,12 @@ namespace BlockBot.module.Integrations.Services
 
                     oldEntry.Delete();
 
-                    // TODO perform replacement
-
                     int startIndex = fileContents.IndexOf("START_CODE_PLACEHOLDER", StringComparison.Ordinal);
                     string startContent = fileContents.Substring(0, startIndex + 22);
+
+                    startContent = startContent
+                        .Replace("##NORMALIZED_USERNAME##", p.Owner.NormalizedUserName)
+                        .Replace("##PROJECT_ID##", projectId.ToString());
 
                     int endIndex = fileContents.IndexOf("END_CODE_PLACEHOLDER", StringComparison.Ordinal);
                     string endContent = fileContents.Substring(endIndex - 3);
@@ -138,7 +142,7 @@ namespace BlockBot.module.Integrations.Services
                 else if (serviceName == TwilioIntegrationCreationService.ServiceName())
                 {
                     // TODO check/perform initialization if necessary
-                    await _twilioIntegrationCreationService.Integrate(projectId, newApi);
+                    await _twilioIntegrationCreationService.Integrate(p?.TwilioServiceSID, p.TwilioAccountSID, p.TwilioAuthToken,  newApi);
                 }
                 // TODO there is probably a better way to do this / is this extensible to more integrations?
         }

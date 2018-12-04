@@ -18,6 +18,7 @@ namespace BlockBot.Module.Aws.Extensions
             services.AddTransient<IApiGatewayService, ApiGatewayService>();
             services.AddTransient<ILambdaService, LambdaService>();
             services.AddTransient<IS3Service, S3Service>();
+            services.AddTransient<DynamoDbService, DynamoDbService>();
             return services;
         }
 

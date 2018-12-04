@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlockBot.Web.Controllers
 {
+    [AllowAnonymous]
     public class DocsController : Controller
     {
         public IActionResult Index()
@@ -14,6 +12,26 @@ namespace BlockBot.Web.Controllers
         }
 
         public IActionResult CreateTwilioAccount()
+        {
+            return View();
+        }
+
+        public IActionResult Components()
+        {
+            return View();
+        }
+
+        public IActionResult EndConversation()
+        {
+            return View();
+        }
+
+        public IActionResult Prompts()
+        {
+            return View();
+        }
+
+        public IActionResult StartConversation()
         {
             return View();
         }

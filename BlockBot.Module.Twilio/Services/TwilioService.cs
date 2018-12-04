@@ -23,11 +23,11 @@ namespace BlockBot.Module.Twilio.Services
             _logger = logger;
         }
 
-        public void UpdateServiceProcessingUrl(string url, string serviceSid)
+        public void UpdateServiceProcessingUrl(string url, string serviceSid, string accountSid, string accountAuthToken)
         {
             try
             {
-                TwilioClient.Init(_twilioAccountSid, _twilioAuthToken);
+                TwilioClient.Init(accountSid, accountAuthToken);
 
                 ServiceResource.Update(new UpdateServiceOptions(serviceSid)
                 {

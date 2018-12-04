@@ -230,6 +230,15 @@ namespace BlockBot.Web.Migrations
 
                     b.Property<string>("RestApiId");
 
+                    b.Property<string>("TwilioAccountSID")
+                        .IsRequired();
+
+                    b.Property<string>("TwilioAuthToken")
+                        .IsRequired();
+
+                    b.Property<string>("TwilioServiceSID")
+                        .IsRequired();
+
                     b.Property<string>("XML");
 
                     b.HasKey("Id");

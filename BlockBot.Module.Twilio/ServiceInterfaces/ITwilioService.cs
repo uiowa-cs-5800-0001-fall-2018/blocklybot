@@ -2,6 +2,6 @@
 {
     public interface ITwilioService
     {
-        void UpdateServiceProcessingUrl(string url, string serviceSid);
+        void UpdateServiceProcessingUrl(string url, string serviceSid, string accountSid, string accountAuthToken);
     }
 }

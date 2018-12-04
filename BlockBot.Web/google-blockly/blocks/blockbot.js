@@ -195,7 +195,7 @@ Blockly.defineBlocksWithJsonArray(
     {
       "type": "calendar_create_appt",
       "lastDummyAlign0": "RIGHT",
-      "message0": "Create Calendar Event %1 Calendar %2 Title %3 Start Time %4 Duration %5",
+      "message0": "Create Calendar Event %1 Calendar %2 Title %3 Start Time %4 Duration (minutes) %5",
       "args0": [
         {
           "type": "input_dummy"
@@ -203,6 +203,7 @@ Blockly.defineBlocksWithJsonArray(
         {
           "type": "input_value",
           "name": "CALENDAR",
+          "check": "calendar",
           "align": "RIGHT"
         },
         {
@@ -251,37 +252,21 @@ Blockly.defineBlocksWithJsonArray(
     },
     {
       "type": "calendar_next_available",
-      "message0": "Next available time(s) %1 Number of times %2 %3 Calendar %4",
+      "message0": "Next available time %1 Duration (minutes) %2 Calendar %3",
       "args0": [
         {
           "type": "input_dummy"
         },
         {
-          "type": "field_dropdown",
-          "name": "TIMES",
-          "options": [
-            [
-              "1",
-              "1"
-            ],
-            [
-              "2",
-              "2"
-            ],
-            [
-              "3",
-              "3"
-            ]
-          ]
-        },
-        {
-          "type": "input_dummy",
+          "type": "input_value",
+          "name": "DURATION",
+          "check": "Number",
           "align": "RIGHT"
         },
         {
           "type": "input_value",
           "name": "CALENDAR",
-          "check": "String",
+          "check": "calendar",
           "align": "RIGHT"
         }
       ],
@@ -290,14 +275,14 @@ Blockly.defineBlocksWithJsonArray(
       "tooltip": "",
       "helpUrl": ""
     },
-    {
-      "type": "datetime",
-      "message0": "",
-      "output": null,
-      "colour": 230,
-      "tooltip": "",
-      "helpUrl": ""
-    },
+    // {
+    //   "type": "datetime",
+    //   "message0": "",
+    //   "output": null,
+    //   "colour": 230,
+    //   "tooltip": "",
+    //   "helpUrl": ""
+    // },
     {
       "type": "calendar_get_name",
       "message0": "Get Calendar Name %1",

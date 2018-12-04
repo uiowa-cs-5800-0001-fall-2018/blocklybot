@@ -69,7 +69,8 @@ namespace BlockBot.Web.Controllers
 
             var model = new WorkspaceModel
             {
-                Project = project
+                Project = project,
+                IsOwner = project.OwnerId == user.Id
             };
             ApplicationUserClaim claim = user.Claims.FirstOrDefault(x => x.ClaimType == "GoogleRefreshToken");
             if (claim != null)

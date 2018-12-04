@@ -1,7 +1,21 @@
 ﻿@{
     ViewData["Title"] = "About";
 }
-<h2>@ViewData["Title"]</h2>
-<h3>@ViewData["Message"]</h3>
 
-<p>Use this area to provide additional information.</p>
+<h2>@ViewData["Title"]</h2>
+<p>We'd love to hear from you!</p>
+<p>
+    Want to know more about us? Visit our <strong>about us</strong> <a asp-controller="Home" asp-action="About">page</a> .
+</p>
+
+<br>
+<h5><strong>VISIT US</strong></h5>
+<address>
+    15 Schaffer Hall<br />
+    Iowa City, IA 52242<br />
+    <strong>Ph No: </strong>
+    <a href="tel:+13192680100">319.268.0100</a>
+</address>
+<br>
+<h5><strong>EMAIL US</strong></h5>
+<address><strong>Support:</strong> <a href="mailto:admin@blockbot.io">admin@blockbot.io</a><br /></address>

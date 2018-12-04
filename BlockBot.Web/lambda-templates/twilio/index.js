@@ -1,34 +1,42 @@
-'use strict';
-const PresentOptions = require('./PresentOptions');
-const Calendar = require('./Calendar');
+class Calendar {
+    constructor(name, id) {
+        this.name = name;
+        this.id = id;
+    }
+}
 
-const {google} = require('googleapis');
+const request = require('request');
 
-var request = require('request');
+var AWS = require("aws-sdk");
 
-const scopes = [
-    'https://www.googleapis.com/auth/userinfo.profile',
-    'https://www.googleapis.com/auth/calendar.readonly',
-    'https://www.googleapis.com/auth/calendar.events'
-];
+var deasync = require('deasync');
 
 module.exports.handler = (event, context, callback) => {
-    // const twilio_request = {}
-    // const body_array = event.body.split('&')
-    // for (var i = 0; i < body_array.length; i++){
-    //     var x = body_array[i].split('=')
-    //     twilio_request[x[0]] = x.length > 1 ? decodeURIComponent(x[1]) : null
-    // }
-    // console.log(twilio_request)
+    const twilio_request = {};
+    //twilio_request.Body = "test";
+    //twilio_request.From = "Harley";
+    const body_array = event.body.split('&');
+    for (var i = 0; i < body_array.length; i++){
+        var x = body_array[i].split('=');
+        twilio_request[x[0]] = x.length > 1 ? decodeURIComponent(x[1]) : null
+    }
+    console.log(twilio_request);
 
-    // TODO look up API key by account sid
-    const TWILIO_API_KEY = "667b624751c4fd22e9a5c5b1bd2b76fe";
-    const GOOGLE_CLIENT_ID = "1064809067576-ik4i954ifh322bk4v2a61fc2o80cpq7d.apps.googleusercontent.com";
-    const GOOGLE_CLIENT_SECRET = "YiMhs7jy0UjXOVUH47KErMPFE";
-    const GOOGLE_REFRESH_TOKEN = "1/IqU7hZon1hI_cZRv6fCiDG6qjIoDLQglFF8pmmIjT7g";
-    const BLOCKBOT_NORMALIZED_USERNAME = "HARLEY@WALDSTEIN.IO";
-    const BLOCKBOT_PROJECT_ID = "";
+    // Constants
+    const BLOCKBOT_NORMALIZED_USERNAME = "##NORMALIZED_USERNAME##"; // "HARLEY@WALDSTEIN.IO";
+    const BLOCKBOT_PROJECT_ID = "##PROJECT_ID##"; //"93800126-dd9b-407f-9d17-852144ba542c";
+    const AWS_ACCESS_KEY = "AKIAIXKEQYRQWLKZSQDA";
+    const AWS_ACCESS_SECRET = "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";
 
+    // configure DynamoDB client
+    AWS.config.update({
+        accessKey: AWS_ACCESS_KEY,
+        secretAccessKey: AWS_ACCESS_SECRET,
+        region: "us-east-1" });
+
+    var ddb = new AWS.DynamoDB({apiVersion: '2012-10-08'});
+
+    var optionPrompt = "";
     var response_message = `<?xml version="1.0" encoding="UTF-8" ?><Response>`
 
 
@@ -40,22 +48,39 @@ module.exports.handler = (event, context, callback) => {
     }
 
     function getMessageBody() {
-        // twilio_request.Body
-        // TODO return text of message
+        return twilio_request.Body;
     }
 
     function getMessageSender() {
-        // twilio_request.From
-        // TODO return sender of message
+        return twilio_request.From;
     }
 
     //
     // Control flow helper functions
     //
     function startConversation() {
-        var phoneNumber = getMessageSender();
-        // TODO check if open conversation exists in dynamodb
-        // TODO if not, register new conversation
+        var sync = true;
+        var data = null;
+
+        var params = {
+            TableName: BLOCKBOT_PROJECT_ID,
+            Item: {
+                'sender' : {S: getMessageSender()},
+            },
+            ConditionExpression: 'attribute_not_exists(sender)',
+            // ExpressionAttributeNames: {'#i' : 'sender'},
+            // ExpressionAttributeValues: {':val' : getMessageSender()}
+        };
+        ddb.putItem(params, function(err, result) {
+            if (err) {
+                // item exists
+            } else {
+                //console.log("success");
+            }
+            data = result;
+            sync = false;
+        });
+        while(sync) {deasync.sleep(100);}
     }
 
     function sendMessage() {
@@ -70,7 +95,20 @@ module.exports.handler = (event, context, callback) => {
     }
 
     function endConversation() {
-        // TODO mark conversation as finished in dynamodb
+        var sync = true;
+        var data;
+        var params = {
+            TableName: BLOCKBOT_PROJECT_ID,
+            Key: {
+                'sender' : {S: getMessageSender()},
+            }
+        };
+
+        ddb.deleteItem(params, function(err, result){
+            data = result;
+            sync = false;
+        });
+        while(sync) {deasync.sleep(100);}
 
         sendMessage();
     }
@@ -80,23 +118,154 @@ module.exports.handler = (event, context, callback) => {
     // Option helper functions: Unseen -> Pending -> Selected
     //
     function isOptionSelectionUnseen(optionPrompt) {
+        var sync = true;
+        var data = null;
 
+        var params = {
+            TableName: BLOCKBOT_PROJECT_ID,
+            Key: {
+                'sender' : {S: getMessageSender()},
+            }
+        };
+
+        ddb.getItem(params, function(err, result) {
+            if (err) {
+                // TODO handle this?
+            } else {
+                data = result;
+                sync = false;
+            }
+        });
+        while(sync) {deasync.sleep(100);}
+
+        if (data.Item.hasOwnProperty(optionPrompt)){
+            return false;
+        }
+
+        return true;
     }
 
-    function isOptionSelectionPending(optionPrompt) {
 
+    function isOptionSelectionPending(optionPrompt) {
+        var sync = true;
+        var data = null;
+
+        var params = {
+            TableName: BLOCKBOT_PROJECT_ID,
+            Key: {
+                'sender' : {S: getMessageSender()},
+            }
+        };
+
+        ddb.getItem(params, function(err, result) {
+            if (err) {
+                // TODO handle this?
+            } else {
+                data = result;
+                sync = false;
+            }
+        });
+        while(sync) {deasync.sleep(100);}
+
+        if (data.Item[optionPrompt]["S"] === 'pending'){
+            return true;
+        }
+
+        return false;
     }
 
     function setOptionSelectionPending(optionPrompt) {
+        var sync = true;
+        var data = null;
 
+        var params = {
+            TableName: BLOCKBOT_PROJECT_ID,
+            Key: {
+                sender: {S: getMessageSender()}
+            },
+            UpdateExpression: "set #o = :status",
+            ExpressionAttributeNames: {
+                "#o": optionPrompt,
+            },
+            ExpressionAttributeValues: {
+                ":status": {
+                    "S": "pending"
+                }
+            }
+
+        };
+
+        ddb.updateItem(params, function(err, result) {
+            if (err) {
+                console.log(err);
+                sync = false;
+            } else {
+                data = result;
+                sync = false;
+            }
+        });
+        while(sync) {deasync.sleep(100);}
     }
 
     function isOptionSelectionSelected(optionPrompt) {
-        // TODO return true if option is selected, otherwise false
+        var sync = true;
+        var data = null;
+
+        var params = {
+            TableName: BLOCKBOT_PROJECT_ID,
+            Key: {
+                'sender' : {S: getMessageSender()},
+            }
+        };
+
+        ddb.getItem(params, function(err, result) {
+            if (err) {
+                // TODO handle this?
+            } else {
+                data = result;
+                sync = false;
+            }
+        });
+        while(sync) {deasync.sleep(100);}
+
+        if (data.Item[optionPrompt]["S"] === 'selected'){
+            return true;
+        }
+
+        return false;
     }
 
     function setOptionSelectionSelected(optionPrompt, optionValue) {
-        // TODO set that the given value was selected for the given prompt
+        var sync = true;
+        var data = null;
+
+        var params = {
+            TableName: BLOCKBOT_PROJECT_ID,
+            Key: {
+                sender: {S: getMessageSender()}
+            },
+            UpdateExpression: "set #o = :status",
+            ExpressionAttributeNames: {
+                "#o": optionPrompt,
+            },
+            ExpressionAttributeValues: {
+                ":status": {
+                    "S": "selected"
+                }
+            }
+
+        };
+
+        ddb.updateItem(params, function(err, result) {
+            if (err) {
+                console.log(err);
+                sync = false;
+            } else {
+                data = result;
+                sync = false;
+            }
+        });
+        while(sync) {deasync.sleep(100);}
     }
 
     function getOptionSelected(optionPrompt) {
@@ -107,16 +276,60 @@ module.exports.handler = (event, context, callback) => {
     // Variable helper functions
     //
     function setVariable(variableName, variableValue) {
-        // TODO check to see if value is set in DynamoDb
-        var stylistSet = false;
+        var sync = true;
+        var data = null;
 
-        if (stylistSet === false) {
-            // TODO set variable in DynamoDb
-        }
+        var params = {
+            TableName: BLOCKBOT_PROJECT_ID,
+            Key: {
+                sender: {S: getMessageSender()}
+            },
+            UpdateExpression: "set #o = :status",
+            ExpressionAttributeNames: {
+                "#o": variableName,
+            },
+            ExpressionAttributeValues: {
+                ":status": {
+                    "S": variableValue
+                }
+            }
+
+        };
+
+        ddb.updateItem(params, function(err, result) {
+            if (err) {
+                console.log(err);
+                sync = false;
+            } else {
+                data = result;
+                sync = false;
+            }
+        });
+        while(sync) {deasync.sleep(100);}
     }
 
     function getVariable(variableName) {
+        var sync = true;
+        var data = null;
 
+        var params = {
+            TableName: BLOCKBOT_PROJECT_ID,
+            Key: {
+                'sender' : {S: getMessageSender()},
+            }
+        };
+
+        ddb.getItem(params, function(err, result) {
+            if (err) {
+                // TODO handle this?
+            } else {
+                data = result;
+                sync = false;
+            }
+        });
+        while(sync) {deasync.sleep(100);}
+
+        return data.Item[variableName]["S"];
     }
 
     //
@@ -127,12 +340,13 @@ module.exports.handler = (event, context, callback) => {
     }
 
     function createCalendarEvent(calendar, title, startTime, durationInMinutes) {
+        var sync = true;
         request.post({
-            url: 'https://localhost:44305/GoogleProxy/CreateCalendarEvent',
+            url: 'https://blockbot.io/GoogleProxy/CreateCalendarEvent',
             form:
                 {
                     username: BLOCKBOT_NORMALIZED_USERNAME,
-                    calendarId: calendar,
+                    calendarId: calendar.id,
                     title: title,
                     startYear: startTime.getFullYear(),
                     startMonth: startTime.getMonth() + 1,
@@ -142,78 +356,82 @@ module.exports.handler = (event, context, callback) => {
                     durationInMinutes: durationInMinutes
                 },
             rejectUnauthorized: false
+        }, function(err,httpResponse,body){
+            sync = false;
         });
+        while(sync) {deasync.sleep(100);}
     }
 
+    // function getNextNCalendarEvents(calendar, n){
+    //     var startTime = new Date();
+    //     request.post({
+    //         url: 'https://localhost:44305/GoogleProxy/GetNextNCalendarEvents',
+    //         form:
+    //             {
+    //                 username: BLOCKBOT_NORMALIZED_USERNAME,
+    //                 calendarId: calendar,
+    //                 startYear: startTime.getFullYear(),
+    //                 startMonth: startTime.getMonth() + 1,
+    //                 startDay: startTime.getDate(),
+    //                 startHour: startTime.getHours(),
+    //                 startMinute: startTime.getMinutes(),
+    //                 n: n
+    //             },
+    //         rejectUnauthorized: false
+    //     });
+    // }
 
-    createCalendarEvent("harley@waldstein.io", "test 2", new Date(2018, 11, 3, 11, 0, 0, 0), 30);
-    return;
+    function getNextAvailableCalendarEvent(calendar, durationInMinutes) {
+        var sync = true;
+        var data = null;
+        var startTime = new Date();
+        request.post({
+            url: 'https://blockbot.io/GoogleProxy/GetNextNAvailableCalendarEventSlots',
+            form:
+                {
+                    username: BLOCKBOT_NORMALIZED_USERNAME,
+                    calendarId: calendar.id,
+                    startYear: startTime.getFullYear(),
+                    startMonth: startTime.getMonth() + 1,
+                    startDay: startTime.getDate(),
+                    startHour: startTime.getHours(),
+                    startMinute: startTime.getMinutes(),
+                    n: 1,
+                    durationInMinutes: durationInMinutes
+                },
+            rejectUnauthorized: false
+        }, function(err,httpResponse,body){
+            data = body;
+            sync = false;
+        });
+        while(sync) {deasync.sleep(100);}
 
-    //
-    // Helper variables
-    //
-    var optionPrompt = "";
+        var month = parseInt(data.slice(6, 8), 10);
+        if (month === 1) {
+            month = 12;
+        }
+        var hour = parseInt(data.slice(12, 14), 10);
+        if (hour === 1){
+            hour = 24;
+        }
+        return new Date(
+            data.slice(1, 5),
+            month - 1,
+            data.slice(9, 11),
+            hour, // handle time zone
+            data.slice(15, 17),
+            0,
+            0);
+    }
+
 
     //
     // placeholder for javascript from workspace
     //
     // START_CODE_PLACEHOLDER
 
-    startConversation();
 
-    // message initially received, present options
+    // END_CODE_PLACEHOLDER
 
-    optionPrompt = "Hair Design, Inc. Choose a number.";
-    if (isOptionSelectionUnseen(optionPrompt)) {
-        setOptionSelectionPending(optionPrompt);
-        addMessage('Hair Design, Inc. Choose a number.%0a1 - appt with Nicole%0a2 - appt with Michelle%0a3 - see stores hours');
-        sendMessage();
-    } else {
-        // TODO explore if this will allow nested "present option" blocks
-        if (isOptionSelectionPending(optionPrompt)) {
-
-            switch (getMessageBody().replace(/\D/g, '')) {
-                case "case-idx":
-                    setOptionSelectionSelected(optionPrompt, "case-idx");
-
-                    setVariable("stylist", getCalendarLink("TODO-calendar-Nicole"));
-
-                    // TODO could include function reference here -- figure out how that works
-
-                    break;
-                case "case-idx":
-                    setOptionSelectionSelected(optionPrompt, "case-idx");
-
-                    // set stylist
-                    setVariable("stylist", getCalendarLink("TODO-calendar-Michelle"));
-
-                    // TODO could include function reference here -- figure out how that works
-
-                    break;
-                case "case-idx":
-                    setOptionSelectionSelected(optionPrompt, "case-idx");
-
-                    addMessage('Store hours are M-F 8am-5pm, closed weekends.');
-
-                    endConversation();
-
-                    break;
-                default:
-                    addMessage('Unable to interpret response. Please select one of the provided options.');
-                    sendMessage();
-                    break;
-            }
-        }
-
-    }
-
-    var c = new Calendar("", "");
-    c.// END_CODE_PLACEHOLDER
-        response_message += '</Response>'
-
-    callback(null, {
-        statusCode: 200,
-        headers: {"content-type": "application/xml"},
-        body: response_message
-    })
+    sendMessage();
 };

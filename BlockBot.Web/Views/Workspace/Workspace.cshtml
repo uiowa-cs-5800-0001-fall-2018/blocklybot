@@ -5,9 +5,12 @@
 
 <div class="container">
     <a href="@Url.Action("Dashboard", "Dashboard")" class="btn btn-secondary">Back to Dashboard</a>
-    <button class="btn btn-primary" onclick="executeWorkspace()">Save</button>
-    <div id="save-spinner" class="fa fa-spinner fa-spin" style="display: none;"></div>
-    <p id="save-message" class="d-inline text-danger"></p>
+    @if (Model.IsOwner)
+    {
+        <button class="btn btn-primary" onclick="executeWorkspace()">Save</button>
+        <div id="save-spinner" class="fa fa-spinner fa-spin" style="display: none;"></div>
+        <p id="save-message" class="d-inline text-danger"></p>
+    }
 </div>
 <br/>
 <div class="container">
@@ -83,35 +86,35 @@
                 return;
             }
 
-//            $.ajax({
-//                url: '@Url.Action("PutProjectXml", "Workspace", new {id = Model.Project.Id})',
-//                data: {
-//                    "xml": xml_text
-//                },
-//                method: 'PUT',
-//                success: function() {
-//                    $.ajax({
-//                        url: '@Url.Action("PutProjectCode", "Workspace", new {id = Model.Project.Id})',
-//                        data: {
-//                            "code": code
-//                        },
-//                        method: 'PUT',
-//                        success: function() {
-//                            document.getElementById("save-spinner").style.display = "none";
-//                        },
-//                        error: function (jqXHR, textStatus, errorThrown) {
-//                            document.getElementById("save-spinner").style.display = "none";
-//                            console.log(errorThrown);
-//                            document.getElementById("save-message").innerHTML = errorThrown;
-//                        }
-//                    });
-//                },
-//                error: function (jqXHR, textStatus, errorThrown) {
-//                    document.getElementById("save-spinner").style.display = "none";
-//                    console.log(errorThrown);
-//                    document.getElementById("save-message").innerHTML = errorThrown;
-//                }
-//            });
+            $.ajax({
+                url: '@Url.Action("PutProjectXml", "Workspace", new {id = Model.Project.Id})',
+                data: {
+                    "xml": xml_text
+                },
+                method: 'PUT',
+                success: function() {
+                    $.ajax({
+                        url: '@Url.Action("PutProjectCode", "Workspace", new {id = Model.Project.Id})',
+                        data: {
+                            "code": code
+                        },
+                        method: 'PUT',
+                        success: function() {
+                            document.getElementById("save-spinner").style.display = "none";
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            document.getElementById("save-spinner").style.display = "none";
+                            console.log(errorThrown);
+                            document.getElementById("save-message").innerHTML = errorThrown;
+                        }
+                    });
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    document.getElementById("save-spinner").style.display = "none";
+                    console.log(errorThrown);
+                    document.getElementById("save-message").innerHTML = errorThrown;
+                }
+            });
 
             
 
