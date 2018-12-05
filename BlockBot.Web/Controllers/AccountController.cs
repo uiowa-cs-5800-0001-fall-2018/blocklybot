@@ -447,7 +447,7 @@ namespace BlockBot.Web.Controllers
                     await _emailSender.SendEmailAsync(model.Input.Email, "Confirm your email",
                         $"Please confirm your BlockBot account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                    //await _signInManager.SignInAsync(user, isPersistent: false);
+                    await _signInManager.SignInAsync(user, isPersistent: false);
                     TempData["Message"] =
                         "Check your inbox for an email from admin@blockbot.io with a link to confirm your account.";
                     return LocalRedirect(returnUrl);

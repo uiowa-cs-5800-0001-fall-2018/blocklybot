@@ -82,7 +82,7 @@ namespace BlockBot.Web
                 );
             }
 
-            services.AddIdentity<ApplicationUser, ApplicationRole>(o => { o.SignIn.RequireConfirmedEmail = true; })
+            services.AddIdentity<ApplicationUser, ApplicationRole>(o => { o.SignIn.RequireConfirmedEmail = false; })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
