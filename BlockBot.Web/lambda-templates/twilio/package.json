@@ -1,0 +1,17 @@
+{
+  "name": "test-function-1-44972a13-2e98-40ae-a43f-be2b7eed44ff",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "request": "2.88.0",
+    "deasync": "0.1.14",
+    "aws-sdk": "2.368.0"
+  }
+}

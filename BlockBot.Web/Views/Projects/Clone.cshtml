@@ -1,0 +1,67 @@
+﻿@model BlockBot.Common.Data.Project
+
+@{
+    ViewData["Title"] = "Clone";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Clone</h2>
+
+<h4>Project</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <div class="alert alert-warning" role="alert">
+            Warning, if the original project uses calendar blocks, your cloned version of the project will not be able to use those calendar blocks and must be updated to use calendar blocks associated with your account.
+        </div>
+        <form asp-action="Clone">
+            <input asp-for="Id" type="hidden" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label data-toggle="tooltip" data-placement="right" title="Determines if other users can see and clone this project.">
+                        <input asp-for="IsPublic" /> @Html.DisplayNameFor(model => model.IsPublic)
+                    </label>
+                </div>
+            </div>
+            <hr />
+            <small class="form-text text-muted">Instructions on how to find Twilio configuration information can be found <a asp-controller="Docs" asp-action="CreateTwilioAccount">here</a>.</small>
+            <div class="form-group">
+                <label asp-for="TwilioServiceSID" class="control-label"></label>
+                <input asp-for="TwilioServiceSID" class="form-control" />
+                <span asp-validation-for="TwilioServiceSID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TwilioAccountSID" class="control-label"></label>
+                <input asp-for="TwilioAccountSID" class="form-control" />
+                <span asp-validation-for="TwilioAccountSID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TwilioAuthToken" class="control-label"></label>
+                <input asp-for="TwilioAuthToken" class="form-control" />
+                <span asp-validation-for="TwilioAuthToken" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Dashboard" asp-controller="Dashboard">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

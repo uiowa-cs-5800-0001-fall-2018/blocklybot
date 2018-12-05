@@ -1,19 +1,20 @@
-﻿<xml xmlns="http://www.w3.org/1999/xhtml" id="toolbox" style="display: none;">
-<category name="Logic" colour="#5C81A6">
-    <block type="controls_if"></block>
-    <block type="logic_compare">
-        <field name="OP">EQ</field>
-    </block>
-    <block type="logic_operation">
-        <field name="OP">AND</field>
-    </block>
-    <block type="logic_negate"></block>
-    <block type="logic_boolean">
+﻿@model IList<Google.Apis.Calendar.v3.Data.CalendarListEntry>
+<xml xmlns="http://www.w3.org/1999/xhtml" id="toolbox" style="display: none;">
+    <category name="Logic" colour="#5C81A6">
+        <block type="controls_if"></block>
+        <block type="logic_compare">
+            <field name="OP">EQ</field>
+        </block>
+        <block type="logic_operation">
+            <field name="OP">AND</field>
+        </block>
+        <block type="logic_negate"></block>
+        <block type="logic_boolean">
+        </block>
         <field name="BOOL">TRUE</field>
-    </block>
-    <block type="logic_null"></block>
-    <block type="logic_ternary"></block>
-</category>
+        <block type="logic_null"></block>
+        <block type="logic_ternary"></block>
+    </category>
 <category name="Loops" colour="#5CA65C">
     <block type="controls_repeat_ext">
         <value name="TIMES">
@@ -356,7 +357,25 @@
 <category name="Variables" colour="#A65C81" custom="VARIABLE"></category>
 <category name="Functions" colour="#9A5CA6" custom="PROCEDURE"></category>
 <sep></sep>
-<category name="SMS" colour="#5b80a5">
+@if (Model != null && Model.Count > 0)
+{
+<category name="Calendars" colour="#5b80a5">
+    @foreach (var calendar in Model)
+    {
+
+    <block type="calendar_calendar">
+        <field name="NAME" editable="false">@calendar.Summary</field>
+        <field name="ID">@calendar.Id</field>
+    </block>
+    }
+    <block type="calendar_create_appt"></block>
+
+    <block type="calendar_get_name"></block>
+    <block type="calendar_next_available"></block>
+</category>
+}
+
+<category name="Messages" colour="#5b80a5">
     <block type="start_conversation"></block>
     <block type="end_conversation"></block>
     <block type="get_message_body"></block>
@@ -364,15 +383,13 @@
 
     <block type="send_message"></block>
 
-    <block type="switch"></block>
-    <block type="case"></block>
     <block type="options"></block>
     <block type="options_alternative"></block>
     <block type="option"></block>
-    <block type="calendar_create_appt"></block>
-    <block type="calendar_calendar"></block>
-    <block type="calendar_get_name"></block>
-    <block type="calendar_next_available"></block>
-    <block type="datetime"></block>
+</category>
+<category name="Options" colour="#5b80a5">
+    <block type="options"></block>
+    <block type="options_alternative"></block>
+    <block type="option"></block>
 </category>
 </xml>

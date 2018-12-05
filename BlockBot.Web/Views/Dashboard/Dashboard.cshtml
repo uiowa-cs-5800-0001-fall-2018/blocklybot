@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BlockBot.Web.Data.Project>
+﻿@model IEnumerable<BlockBot.Common.Data.Project>
 @{
     ViewData["Title"] = " Projects Dashboard";
 }
@@ -33,7 +33,8 @@
                 <td>
                     <a asp-action="Edit" asp-controller="Projects" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-controller="Projects" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-controller="Projects" asp-route-id="@item.Id">Delete</a>
+                    <a asp-action="Delete" asp-controller="Projects" asp-route-id="@item.Id">Delete</a> |
+                    <a asp-action="Clone" asp-controller="Projects" asp-route-id="@item.Id">Clone</a>
                 </td>
                 <td>
                     <a class="btn btn-primary" asp-action="Workspace" asp-controller="Workspace" asp-route-id="@item.Id">Edit in Workspace</a>

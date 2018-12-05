@@ -30,6 +30,11 @@
       "provider": "cdnjs",
       "library": "font-awesome@4.7.0",
       "destination": "wwwroot/lib/font-awesome/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "jquery.qrcode@1.0",
+      "destination": "wwwroot/lib/jquery.qrcode/"
     }
   ]
 }

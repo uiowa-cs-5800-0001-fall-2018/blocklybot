@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using BlockBot.Web.Data;
+using BlockBot.Common.Data;
 using BlockBot.Web.Models.AccountManage;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -387,6 +388,12 @@ namespace BlockBot.Web.Controllers
             {
                 throw new InvalidOperationException(
                     $"Unexpected error occurred adding external login for user with ID '{user.Id}'.");
+            }
+
+            var refreshTokenClaim = info.AuthenticationTokens.FirstOrDefault(x => x.Name == "refresh_token");
+            if (refreshTokenClaim != null)
+            {
+                await _userManager.AddClaimAsync(user, new Claim(info.LoginProvider + "RefreshToken", refreshTokenClaim.Value, ClaimValueTypes.String, info.LoginProvider));
             }
 
             // Clear the existing external cookie to ensure a clean login process

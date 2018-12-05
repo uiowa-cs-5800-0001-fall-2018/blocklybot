@@ -8,14 +8,18 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="1.3.2" />
-    <PackageReference Include="MSTest.TestFramework" Version="1.3.2" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BlockBot.Common\BlockBot.Common.csproj" />
     <ProjectReference Include="..\BlockBot.Module.Aws\BlockBot.Module.Aws.csproj" />
+    <ProjectReference Include="..\BlockBot.Module.BlockBot\BlockBot.Module.BlockBot.csproj" />
+    <ProjectReference Include="..\BlockBot.Module.Google\BlockBot.Module.Google.csproj" />
     <ProjectReference Include="..\BlockBot.Module.SendGrid\BlockBot.Module.SendGrid.csproj" />
     <ProjectReference Include="..\BlockBot.Module.Twilio\BlockBot.Module.Twilio.csproj" />
+    <ProjectReference Include="..\BlockBot.Web\BlockBot.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="BlockBot\" />
     <Folder Include="Web\" />
     <Folder Include="Twilio\" />
     <Folder Include="SendGrid\" />

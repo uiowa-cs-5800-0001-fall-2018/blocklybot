@@ -1,4 +1,4 @@
-﻿@model BlockBot.Web.Data.Project
+﻿@model BlockBot.Common.Data.Project
 
 @{
     ViewData["Title"] = "Edit";
@@ -31,6 +31,21 @@
                         <input asp-for="IsPublic" /> @Html.DisplayNameFor(model => model.IsPublic)
                     </label>
                 </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="TwilioServiceSID" class="control-label"></label>
+                <input asp-for="TwilioServiceSID" class="form-control" />
+                <span asp-validation-for="TwilioServiceSID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TwilioAccountSID" class="control-label"></label>
+                <input asp-for="TwilioAccountSID" class="form-control" />
+                <span asp-validation-for="TwilioAccountSID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TwilioAuthToken" class="control-label"></label>
+                <input asp-for="TwilioAuthToken" class="form-control" />
+                <span asp-validation-for="TwilioAuthToken" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" />

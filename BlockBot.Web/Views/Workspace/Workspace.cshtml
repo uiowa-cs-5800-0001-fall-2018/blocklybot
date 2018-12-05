@@ -1,23 +1,26 @@
-﻿@model BlockBot.Web.Data.Project
+﻿@model BlockBot.Web.Models.WorkspaceModel
 @{
     ViewData["Title"] = "Workspace";
 }
 
 <div class="container">
     <a href="@Url.Action("Dashboard", "Dashboard")" class="btn btn-secondary">Back to Dashboard</a>
-    <button class="btn btn-primary" onclick="executeWorkspace()">Save</button>
-    <div id="save-spinner" class="fa fa-spinner fa-spin" style="display: none;"></div>
-    <p id="save-message" class="d-inline text-danger"></p>
+    @if (Model.IsOwner)
+    {
+        <button class="btn btn-primary" onclick="executeWorkspace()">Save</button>
+        <div id="save-spinner" class="fa fa-spinner fa-spin" style="display: none;"></div>
+        <p id="save-message" class="d-inline text-danger"></p>
+    }
 </div>
 <br/>
 <div class="container">
     <div id="blocklyDiv" style="height: 64vh; width: auto;"></div>
 </div>
 
-<partial name="_ToolboxPartial"/>
+<partial name="_ToolboxPartial" model="@Model.CalendarList"/>
 
 <div style="display: none;">
-    @Html.Raw(Model.XML)
+    @Html.Raw(Model.Project.XML)
 </div>
 
 @section Scripts{
@@ -84,14 +87,14 @@
             }
 
             $.ajax({
-                url: '@Url.Action("PutProjectXml", "Workspace", new {id = Model.Id})',
+                url: '@Url.Action("PutProjectXml", "Workspace", new {id = Model.Project.Id})',
                 data: {
                     "xml": xml_text
                 },
                 method: 'PUT',
                 success: function() {
                     $.ajax({
-                        url: '@Url.Action("PutProjectCode", "Workspace", new {id = Model.Id})',
+                        url: '@Url.Action("PutProjectCode", "Workspace", new {id = Model.Project.Id})',
                         data: {
                             "code": code
                         },

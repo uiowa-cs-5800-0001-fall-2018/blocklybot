@@ -39,9 +39,9 @@ namespace BlockBot.Module.Twilio.Services
             _twilioService = twilioService;
         }
 
-        public async Task Integrate(Guid projectId, string newApi)
+        public async Task Integrate(string serviceSid, string accountSid, string authToken, string newApi)
         {
-            _twilioService.UpdateServiceProcessingUrl(newApi, "MG2ae64c23b7ba10eb5aecff49998e5ec9");
+            _twilioService.UpdateServiceProcessingUrl(newApi, serviceSid, accountSid, authToken);
         }
     }
 }

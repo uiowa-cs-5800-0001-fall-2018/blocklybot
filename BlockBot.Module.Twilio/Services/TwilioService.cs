@@ -4,7 +4,9 @@ using BlockBot.Module.Twilio.ServiceInterfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Twilio;
+using Twilio.Rest.Lookups.V1;
 using Twilio.Rest.Messaging.V1;
+using PhoneNumberResource = Twilio.Rest.Messaging.V1.Service.PhoneNumberResource;
 
 namespace BlockBot.Module.Twilio.Services
 {
@@ -21,16 +23,17 @@ namespace BlockBot.Module.Twilio.Services
             _logger = logger;
         }
 
-        public void UpdateServiceProcessingUrl(string url, string serviceSid)
+        public void UpdateServiceProcessingUrl(string url, string serviceSid, string accountSid, string accountAuthToken)
         {
             try
             {
-                TwilioClient.Init(_twilioAccountSid, _twilioAuthToken);
+                TwilioClient.Init(accountSid, accountAuthToken);
 
                 ServiceResource.Update(new UpdateServiceOptions(serviceSid)
                 {
                     FriendlyName = "Appointment Messaging Service",
-                    InboundRequestUrl = new Uri(url)
+                    InboundRequestUrl = new Uri(url),
+                    
                 });
             }
             catch (Exception e)

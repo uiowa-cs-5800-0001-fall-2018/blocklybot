@@ -1,0 +1,71 @@
+﻿@{
+    ViewData["Title"] = "BlockBot Documentation";
+    Layout = "_Layout";
+}
+
+<h2>Create a Twilio Account</h2>
+<br />
+<p>Twilio is a company that provides text messaging, voice calling, and other telecommunication services. In this tutorial we are going to create a Twilio account, create a Twilio Messaging Service, and associate a phone number with that Twilio Messaging Service. Then, that Twilio Messaging Service can be used to interact with your BlockBot bot via text message.</p>
+<br />
+<h4>1. Create Twilio account</h4>
+<img style="height: 400px;" src="~/images/twilio-1.png" />
+<p>To create a Twilio account for use with your BlockBot bot, navigate to <a href="https://www.twilio.com/try-twilio" target="_blank">Twilio</a> and fill out the account creation form.</p>
+<br />
+<h4>2. Verify Phone Number</h4>
+<img style="height: 300px;" src="~/images/twilio-2.png" />
+<p>Enter your phone number. Twilio will use your phone number to provide additional account security.</p>
+<br />
+<h4>3. Create a Project</h4>
+<img style="height: 400px;" src="~/images/twilio-3.png" />
+<p>On the Create a Project page, click into the Products tab and select Programmable SMS, then click Continue.</p>
+<br />
+<h4>4. Expand All Products & Services Menu</h4>
+<img style="height: 200px;" src="~/images/twilio-4.png" />
+<p>In the dashboard, find the All Products & Services button on the left side of the screen and click it to open the All Products & Services menu.</p>
+<br />
+<h4>5. Select Programmable SMS</h4>
+<img style="height: 175px;" src="~/images/twilio-5.png" />
+<p>In the All Products & Services menu, find and click the Programmable SMS option.</p>
+<br />
+<h4>6. Select SMS</h4>
+<img style="height: 250px;" src="~/images/twilio-6.png" />
+<p>In the Programmable SMS dashboard, find and click the SMS option on the left side of the screen</p>
+<br />
+<h4>7. Create Messaging Service</h4>
+<img style="height: 300px;" src="~/images/twilio-7.png" />
+<p>Click the Create new Messaging Service button to start creating a messaging service.</p>
+<br />
+<h4>8. Name Messaging Service</h4>
+<img style="height: 250px;" src="~/images/twilio-8.png" />
+<p>Give your messaging service a name, and select Chat Bot/Interactive 2-way, then click Create.</p>
+<br />
+<h4>9. Record Service SID</h4>
+<img style="height: 200px;" src="~/images/twilio-9.png" />
+<p>Record the Service SID. You will use this later to connect BlockBot to your Twilio Messaging Service.</p>
+<br />
+<h4>10. Select Numbers Tab</h4>
+<img style="height: 150px;" src="~/images/twilio-10.png" />
+<p>On the left side of the page, select the Numbers tab.</p>
+<br />
+<h4>11. Select Buy a Number</h4>
+<img style="height: 200px;" src="~/images/twilio-11.png" />
+<p>Click the Buy a Number button to open a prompt for associating a phone number with your Messaging Service. Although the page says that it will cost money, Twilio trial accounts can associate one phone number to a messaging service for free as part of the Twilio trial.</p>
+<br />
+<h4>12. Search For Number</h4>
+<img style="height: 270px;" src="~/images/twilio-12.png" />
+<p>Use the prompt to search for a phone number. Ensure the selected number supports SMS.</p>
+<br />
+<h4>13. Select Number</h4>
+<img style="height: 300px;" src="~/images/twilio-13.png" />
+<p>Pick your desired number and select Buy. This will associate the number with your Messaging Service.</p>
+<br />
+<h4>14. Select Home</h4>
+<img style="height: 200px;" src="~/images/twilio-14.png" />
+<p>On the left side of the screen, select the Console Dashboard button to navigate back to the main dashboard.</p>
+<br />
+<h4>15. Record Account SID and Auth Token</h4>
+<img style="height: 200px;" src="~/images/twilio-15.png" />
+<p>On the main Twilio dashboard, find and record the account SID and auth token on the right side of the screen. These will be used by BlockBot to connect to Twilio on your behalf.</p>
+<br />
+<h4>16. Create BlockBot Project</h4>
+<p>Now that your Twilio Messaging Service is configured and you have all of the necessary information, you can <a asp-controller="Projects" asp-action="Create">create a BlockBot project</a> to connect with your Twilio Messaging Service.</p>

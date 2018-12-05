@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BlockBot.Web.Data;
+using BlockBot.Common.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,6 +41,13 @@ namespace BlockBot.Web.Controllers
             }
             
             return new OkResult();
+        }
+
+
+        public async Task<JsonResult> ShowUserClaims()
+        {
+            ApplicationUser user = await _applicationUserManager.FindByEmailAsync("harley@waldstein.io");
+            return new JsonResult(user?.Claims);
         }
 
         public async Task<IActionResult> CreateIntegrationTemplatesBucket()
