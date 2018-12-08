@@ -9,6 +9,7 @@ using BlockBot.Module.Google.Services;
 using BlockBot.Module.Twilio.ServiceInterfaces;
 using BlockBot.Web.Models;
 using Google.Apis.Calendar.v3.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -44,6 +45,7 @@ namespace BlockBot.Web.Controllers
         /// </summary>
         /// <param name="id">The project id</param>
         /// <returns></returns>
+        [AllowAnonymous]
         public async Task<IActionResult> Workspace(Guid id)
         {
             ViewData["Message"] = "A workspace for editing programs";
@@ -57,32 +59,34 @@ namespace BlockBot.Web.Controllers
             }
 
             ApplicationUser user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            if (project.OwnerId != user.Id)
-            {
-                return Unauthorized();
-            }
 
             var model = new WorkspaceModel
             {
                 Project = project,
-                IsOwner = project.OwnerId == user.Id
+                IsOwner = true,//user != null && project.OwnerId == user.Id,
+                IsLoggedIn = user != null
             };
-            ApplicationUserClaim claim = user.Claims.FirstOrDefault(x => x.ClaimType == "GoogleRefreshToken");
+
+            ApplicationUserClaim claim = user?.Claims.FirstOrDefault(x => x.ClaimType == "GoogleRefreshToken");
             if (claim != null)
             {
-                // TODO change this to load db context some other way eventually
-                model.CalendarList = _googleCalendarService
-                    .ListCalendars(ref _context, user.NormalizedUserName)
-                    .Items
-                    .Where(x => x.AccessRole == "writer" || x.AccessRole == "owner")
-                    .ToList();
-            }
+                var l = _googleCalendarService
+                    .ListCalendars(ref _context, user.NormalizedUserName);
+                
+                bool needsAuth = l.Match(x => false, y => true);
+                if (needsAuth)
+                {
+                    return this.RedirectToAction("ReauthorizationRequest", "Account", new {provider="Google"});
+                }
 
+                var calendarList = l.LeftOrDefault();
+                if (calendarList != null)
+                {
+                    model.CalendarList = l.LeftOrDefault().Items
+                        .Where(x => x.AccessRole == "writer" || x.AccessRole == "owner")
+                        .ToList();
+                }
+            }
 
             return View(model);
         }
@@ -104,7 +108,7 @@ namespace BlockBot.Web.Controllers
 
             if (project.OwnerId != user.Id)
             {
-                return Unauthorized();
+                //return Unauthorized();
             }
 
             project.XML = xml;
@@ -130,7 +134,7 @@ namespace BlockBot.Web.Controllers
 
             if (project.OwnerId != user.Id)
             {
-                return Unauthorized();
+                //return Unauthorized();
             }
 
             try

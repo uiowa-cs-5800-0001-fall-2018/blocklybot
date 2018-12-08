@@ -28,7 +28,7 @@
                                         <a class="btn btn-sm btn-outline-secondary" asp-controller="Workspace" asp-action="Workspace" asp-route-id="@project.Id">View</a>
                                         <a class="btn btn-sm btn-outline-secondary" asp-controller="Projects" asp-action="Clone" asp-route-id="@project.Id">Clone</a>
                                     </div>
-                                    <small class="text-muted">@project.Owner.UserName</small> <!-- TODO make like to page of user's public projects, user's "profile" -->
+                                    <small class="text-muted"><a asp-controller="User" asp-action="Projects" asp-route-id="@project.OwnerId">@project.Owner.UserName</a></small> <!-- TODO make like to page of user's public projects, user's "profile" -->
                                 </div>
                             </div>
                         </div>

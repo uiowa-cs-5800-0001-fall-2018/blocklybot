@@ -12,5 +12,6 @@ namespace BlockBot.Web.Models
         public Project Project { get; set; }
         public IList<CalendarListEntry> CalendarList { get; set; }
         public bool IsOwner { get; set; }
+        public bool IsLoggedIn { get; set; }
     }
 }

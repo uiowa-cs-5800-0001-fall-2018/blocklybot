@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BlockBot.Common.Data;
 using BlockBot.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SQLitePCL;
 
@@ -19,6 +20,8 @@ namespace BlockBot.Web.Controllers
             _context = context;
             _userManager = userManager;
         }
+
+        [AllowAnonymous]
         public async Task<IActionResult> Projects(Guid id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());

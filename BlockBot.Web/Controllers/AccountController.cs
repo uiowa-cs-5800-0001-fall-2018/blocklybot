@@ -194,6 +194,12 @@ namespace BlockBot.Web.Controllers
             return View("ExternalLogin", model);
         }
 
+        public IActionResult ReauthorizationRequest(string provider, string returnUrl = null)
+        {
+            TempData["returnUrl"] = returnUrl;
+            return View("ReauthorizationRequest", provider);
+        }
+
         [HttpGet]
         public IActionResult ForgotPassword()
         {

@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BlockBot.Common.Data;
+using BlockBot.Common.Functional;
 using BlockBot.Module.Google.Extensions;
+using BlockBot.Module.Google.Models;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
@@ -61,7 +63,9 @@ namespace BlockBot.Module.Google.Services
                             $"Cannot initialize GoogleCalendarService for user '{username}', no refresh token found.");
                     }
 
-                    x = _flow.RefreshTokenAsync(username, refreshToken, CancellationToken.None).Result;
+
+                        x = _flow.RefreshTokenAsync(username, refreshToken, CancellationToken.None).Result;
+                    
                     _context.StoreAsync(username, x);
                 }
 
@@ -74,10 +78,19 @@ namespace BlockBot.Module.Google.Services
             }
         }
 
-        public CalendarList ListCalendars(ref ApplicationDbContext _context, string username)
+        public Either<CalendarList, ReauthorizationRequest> ListCalendars(ref ApplicationDbContext _context, string username)
         {
-            InitializeIfNecessary(ref _context,username);
-            return _service.CalendarList.List().ExecuteAsync().Result;
+            Either<CalendarList, ReauthorizationException> x = null;
+            try
+            {
+                InitializeIfNecessary(ref _context,username);
+                return _service.CalendarList.List().ExecuteAsync().Result;
+            }
+            catch (Exception e)
+            {
+               // likely need to get new oauth refresh token
+                return new Either<CalendarList, ReauthorizationRequest>(new ReauthorizationRequest());
+            }
         }
 
         public Event CreateEvent(ref ApplicationDbContext _context, string username, string calendarId, Event eventObject)

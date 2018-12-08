@@ -28,20 +28,20 @@ Blockly.JavaScript['get_message_sender'] = function(block) {
 };
 
 
-// Blockly.JavaScript['switch'] = function(block) {
-//     var value_input = Blockly.JavaScript.valueToCode(block, 'Input', Blockly.JavaScript.ORDER_ATOMIC);
-//     var statements_cases = Blockly.JavaScript.statementToCode(block, 'Cases');
-//     var statements_default = Blockly.JavaScript.statementToCode(block, 'Default');
-//     var code = 'switch (' + value_input + ') {\n' + statements_cases + 'default:\n' + statements_default + '}\n';
-//     return code;
-// };
-//
-// Blockly.JavaScript['case'] = function(block) {
-//     var value_case = Blockly.JavaScript.valueToCode(block, 'case', Blockly.JavaScript.ORDER_ATOMIC);
-//     var statements_case_body = Blockly.JavaScript.statementToCode(block, 'case_body');
-//     var code = 'case ' + value_case + ':\n' + statements_case_body + 'break;\n';
-//     return code;
-// };
+Blockly.JavaScript['switch'] = function(block) {
+    var value_input = Blockly.JavaScript.valueToCode(block, 'Input', Blockly.JavaScript.ORDER_ATOMIC);
+    var statements_cases = Blockly.JavaScript.statementToCode(block, 'Cases');
+    var statements_default = Blockly.JavaScript.statementToCode(block, 'Default');
+    var code = 'switch (' + value_input + ') {\n' + statements_cases + 'default:\n' + statements_default + '}\n';
+    return code;
+};
+
+Blockly.JavaScript['case'] = function(block) {
+    var value_case = Blockly.JavaScript.valueToCode(block, 'case', Blockly.JavaScript.ORDER_ATOMIC);
+    var statements_case_body = Blockly.JavaScript.statementToCode(block, 'case_body');
+    var code = 'case ' + value_case + ':\n' + statements_case_body + 'break;\n';
+    return code;
+};
 
 
 
@@ -65,13 +65,14 @@ Blockly.JavaScript['options'] = function(block) {
     var regex = /case-idx/g;
     for (let i = 0; i < codeArray.length; i++) {
         code_string += codeArray[i].replace(regex, (i + 1).toString());
-        option_string += "\n" + (i + 1).toString() + " - " + optionArray[i].slice(1, optionArray[i].length - 1);
+        option_string += (i + 1).toString() + " - " + optionArray[i].slice(1, optionArray[i].length - 1) + ", ";
     }
+    option_string = option_string.slice(0, option_string.length - 2);
 
     return "    optionPrompt = " + value_prompt +";\n" +
         "    if (isOptionSelectionUnseen(optionPrompt)) {\n" +
         "        setOptionSelectionPending(optionPrompt);\n" +
-        "        addMessage(optionPrompt + '" + option_string + "');\n" +
+        "        addMessage(optionPrompt + ': " + option_string + "');\n" +
         "        sendMessage();\n" +
         "    } else {\n" +
         "        if (isOptionSelectionPending(optionPrompt)){\n" +
@@ -84,7 +85,7 @@ Blockly.JavaScript['options'] = function(block) {
         "            }\n" +
         "        }\n" +
         "        \n" +
-        "    }";
+        "    }\n";
 };
 
 Blockly.JavaScript['options_alternative'] = function(block) {
@@ -109,13 +110,14 @@ Blockly.JavaScript['options_alternative'] = function(block) {
     var regex = /case-idx/g;
     for (let i = 0; i < codeArray.length; i++) {
         code_string += codeArray[i].replace(regex, (i + 1).toString());
-        option_string += "%0a" + (i + 1).toString() + " - " + optionArray[i].slice(1, optionArray[i].length - 1);
+        option_string += (i + 1).toString() + " - " + optionArray[i].slice(1, optionArray[i].length - 1) + ", ";
     }
+    option_string = option_string.slice(0, option_string.length - 2);
 
     return "    optionPrompt = " + value_prompt +";\n" +
         "    if (isOptionSelectionUnseen(optionPrompt)) {\n" +
         "        setOptionSelectionPending(optionPrompt);\n" +
-        "        addMessage(optionPrompt + '" + option_string + "');\n" +
+        "        addMessage(optionPrompt + ': " + option_string + "');\n" +
         "        sendMessage();\n" +
         "    } else {\n" +
         "        if (isOptionSelectionPending(optionPrompt)){\n" +
@@ -128,7 +130,7 @@ Blockly.JavaScript['options_alternative'] = function(block) {
         "            }\n" +
         "        }\n" +
         "        \n" +
-        "    }";
+        "    }\n";
 };
 
 Blockly.JavaScript['option'] = function(block) {

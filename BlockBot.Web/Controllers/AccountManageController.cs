@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using BlockBot.Common.Data;
+using BlockBot.Module.Google.Models;
 using BlockBot.Web.Models.AccountManage;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -352,9 +353,12 @@ namespace BlockBot.Web.Controllers
             return RedirectToAction("ExternalLogins");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> ExternalLoginsLinkLogin(string provider)
+        public async Task<IActionResult> ExternalLoginsLinkLogin(string provider, string returnUrl = null)
         {
+            if (returnUrl != null)
+            {
+                TempData["returnUrl"] = returnUrl;
+            }
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
@@ -367,7 +371,7 @@ namespace BlockBot.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ExternalLoginsLinkLoginCallback()
+        public async Task<IActionResult> ExternalLoginsLinkLoginCallback(string returnUrl = null)
         {
             ApplicationUser user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -383,6 +387,8 @@ namespace BlockBot.Web.Controllers
                     $"Unexpected error occurred loading external login info for user with ID '{user.Id}'.");
             }
 
+            await _userManager.RemoveLoginAsync(user, info.LoginProvider, info.ProviderKey);
+
             IdentityResult result = await _userManager.AddLoginAsync(user, info);
             if (!result.Succeeded)
             {
@@ -393,11 +399,26 @@ namespace BlockBot.Web.Controllers
             var refreshTokenClaim = info.AuthenticationTokens.FirstOrDefault(x => x.Name == "refresh_token");
             if (refreshTokenClaim != null)
             {
+                var claims = _userManager.GetClaimsAsync(user).Result.Where(x => x.Type == info.LoginProvider + "RefreshToken").ToList();
+                if (claims.Any())
+                {
+                    foreach (Claim claim in claims)
+                    {
+                        await _userManager.RemoveClaimAsync(user, claim);
+                    }
+                    
+                }
                 await _userManager.AddClaimAsync(user, new Claim(info.LoginProvider + "RefreshToken", refreshTokenClaim.Value, ClaimValueTypes.String, info.LoginProvider));
             }
 
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+
+            if (returnUrl != null)
+            {
+                return LocalRedirect(returnUrl);
+            }
+            
 
             TempData["StatusMessage"] = "The external login was added.";
             return RedirectToAction("ExternalLogins");

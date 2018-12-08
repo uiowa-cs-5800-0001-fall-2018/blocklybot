@@ -4,7 +4,15 @@
 }
 
 <div class="container">
-    <a href="@Url.Action("Dashboard", "Dashboard")" class="btn btn-secondary">Back to Dashboard</a>
+    @if (Model.IsLoggedIn)
+    {
+        <a href="@Url.Action("Dashboard", "Dashboard")" class="btn btn-secondary">Back to Dashboard</a>
+    }
+    else
+    {
+        <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">Back to Home</a>
+    }
+
     @if (Model.IsOwner)
     {
         <button class="btn btn-primary" onclick="executeWorkspace()">Save</button>

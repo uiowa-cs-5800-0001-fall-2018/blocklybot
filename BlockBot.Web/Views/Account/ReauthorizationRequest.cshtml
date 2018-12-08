@@ -1,0 +1,13 @@
+﻿@model string
+@{
+    ViewData["Title"] = "Reauthorization Required";
+}
+
+<header>
+    <h1>@ViewData["Title"]</h1>
+    <p class="text-info">You link to your account at @Model has broken and needs to be reauthenticated. You will be redirected in 5 seconds.</p>
+</header>
+
+@section Css {
+<meta http-equiv="refresh" content="5; url=@Url.Action("ExternalLoginsLinkLogin", "AccountManage", new {provider=Model})" />
+}
